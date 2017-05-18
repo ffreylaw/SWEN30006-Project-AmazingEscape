@@ -55,17 +55,17 @@ public class MyAIController extends CarController {
 	public void handleNone(float delta) {
 		HashMap<Coordinate, MapTile> currentView = getView();
 		
-		if (getVelocity() < CAR_SPEED){
+		if (getVelocity() < CAR_SPEED) {
 			applyForwardAcceleration();
 		}
 		// Turn towards the north
-		if (!getOrientation().equals(WorldSpatial.Direction.NORTH)){
+		if (!getOrientation().equals(WorldSpatial.Direction.NORTH)) {
 			lastTurnDirection = WorldSpatial.RelativeDirection.LEFT;
 			applyLeftTurn(getOrientation(), delta);
 		}
 		if (checkNorth(currentView)){
 			// Turn right until we go back to east!
-			if (!getOrientation().equals(WorldSpatial.Direction.EAST)){
+			if (!getOrientation().equals(WorldSpatial.Direction.EAST)) {
 				lastTurnDirection = WorldSpatial.RelativeDirection.RIGHT;
 				applyRightTurn(getOrientation(), delta);
 			} else {
@@ -84,20 +84,20 @@ public class MyAIController extends CarController {
 			applyRightTurn(getOrientation(), delta);
 		} else if (isTurningLeft){
 			// Apply the left turn if you are not currently near a wall.
-			if (!checkFollowingWall(getOrientation(), currentView)){
+			if (!checkFollowingWall(getOrientation(), currentView)) {
 				applyLeftTurn(getOrientation(), delta);
 			} else {
 				isTurningLeft = false;
 			}
-		} else if(checkFollowingWall(getOrientation(), currentView)) {
+		} else if (checkFollowingWall(getOrientation(), currentView)) {
 			// Try to determine whether or not the car is next to a wall.
 			
 			// Maintain some velocity
-			if(getVelocity() < CAR_SPEED){
+			if (getVelocity() < CAR_SPEED) {
 				applyForwardAcceleration();
 			}
 			// If there is wall ahead, turn right!
-			if(checkWallAhead(getOrientation(), currentView)){
+			if (checkWallAhead(getOrientation(), currentView)) {
 				lastTurnDirection = WorldSpatial.RelativeDirection.RIGHT;
 				isTurningRight = true;				
 			}
@@ -252,10 +252,10 @@ public class MyAIController extends CarController {
 			previousDirection = getOrientation();
 		} else {
 			if (previousDirection != getOrientation()) {
-				if (isTurningLeft){
+				if (isTurningLeft) {
 					isTurningLeft = false;
 				}
-				if (isTurningRight){
+				if (isTurningRight) {
 					isTurningRight = false;
 				}
 				previousDirection = getOrientation();
@@ -359,6 +359,14 @@ public class MyAIController extends CarController {
 			}
 		}
 		return false;
+	}
+	
+	public boolean isTurningLeft() {
+		return this.isTurningLeft;
+	}
+	
+	public boolean isTurningRight() {
+		return this.isTurningRight;
 	}
 	
 }
