@@ -11,11 +11,12 @@ import world.WorldSpatial;
 public class MyAIController extends CarController {
 	
 	public enum State {
-		NONE, FOLLOWING_WALL, DEAD_END, BIG_TRAP
+		NONE, FOLLOWING_WALL, DEAD_END, TRAP
 	};
 	
 	private State state;
 	private DeadEndHandler deadEndHandler;
+	private TrapHandler trapHandler;
 	
 	private boolean isTurningLeft = false;
 	private boolean isTurningRight = false; 
@@ -31,6 +32,7 @@ public class MyAIController extends CarController {
 	public MyAIController(Car car) {
 		super(car);
 		this.deadEndHandler = new DeadEndHandler();
+		this.trapHandler = new TrapHandler();
 		this.state = State.NONE;
 	}
 
@@ -42,6 +44,7 @@ public class MyAIController extends CarController {
 		case NONE: 		 	 handleNone(delta);						break;
 		case FOLLOWING_WALL: handleFollowingWall(delta);			break;
 		case DEAD_END: 		 deadEndHandler.handle(this, delta);	break;
+		case TRAP:			 trapHandler.handle(this, delta);		break;
 		}
 	}
 	
