@@ -31,14 +31,14 @@ import world.WorldSpatial.Direction;
  *
  */
 public class Car extends Sprite{
-	
-	
+
+
 	// Logger
 	private static Logger logger = LogManager.getLogger();
-	
+
 	private Direction currentOrientation;
 
-	
+
 	private Vector2 velocity;
 	private float angle = 0;
 	private float rotation = 0;
@@ -46,9 +46,9 @@ public class Car extends Sprite{
 	private boolean accelerating = false;
 	private boolean handBrake = false;
 	private boolean wasReversing = false;
-	
-	
-	
+
+
+
 	private static final float MAX_SPEED = 5f;
 	private static final float MAX_REVERSE_SPEED = 2.5f;
 	private static final float ROTATING_FACTOR = 150f;
@@ -61,29 +61,29 @@ public class Car extends Sprite{
 	private static final float FRICTION_FORCE = 0.5f;
 	private static final int SNAP_THRESHOLD = 5;
 	public static final int VIEW_SQUARE = 3;
-	
-	
-	
+
+
+
 	private static enum State { FORWARD, REVERSE };
 	private static State carDirection = State.FORWARD;
-	
-	
+
+
 	private static int CAR_WIDTH;
 	private static int CAR_HEIGHT;
-	
+
 	private int health;
 	private static final int INITIAL_HEALTH = 100;
-	
+
 	ArrayList<Integer> startLocation;
-	
+
 	public Car(Sprite sprite){
 		super(sprite);
-		
+
 		health = INITIAL_HEALTH;
 		velocity = new Vector2();
 
 		startLocation = getStartPosition();
-		
+
 		if(startLocation.size() > 0){
 			setX(startLocation.get(0));
 			setY(startLocation.get(1));
@@ -95,12 +95,12 @@ public class Car extends Sprite{
 				e.printStackTrace();
 			}
 		}
-		
+
 		CAR_WIDTH = (int) sprite.getWidth();
 		CAR_HEIGHT = (int) sprite.getHeight();
-		
+
 		this.currentOrientation = WorldSpatial.Direction.EAST;
-		
+
 	}
 
 
@@ -109,13 +109,13 @@ public class Car extends Sprite{
 			printDebug();
 		}
 		checkHealth();
-		
+
 		// Get the current tile
 		MapTile currentTile = World.lookUp(getX(), getY());
 		if(currentTile.getName().equals("Utility")){
-			
+
 			if(((UtilityTile) currentTile).isExit()){
-				
+
 				Simulation.winGame();
 			}
 		}
@@ -129,7 +129,7 @@ public class Car extends Sprite{
 		if(accelerating || reversing){
 			drivingForce = ACCELERATION;
 		}
-		
+
 		// Calculate the braking force, if not braking apply a small amount of friction so we slow down over
 		// time, given this is negligible compared to braking we do one or, not both
 		float frictionForce = 0;
@@ -142,20 +142,20 @@ public class Car extends Sprite{
 		// Check if you are standing on a trap!
 		checkTrap(currentTile,delta);
 		applySteering();
-		
+
 		// Calculate acceleration
 		Vector2 netAcceleration = calculateAcceleration(drivingForce, frictionForce);
-		
+
 		// Apply the acceleration to velocity
 		applyAcceleration(netAcceleration, delta);
-		
+
 		setPosition(velocity, delta);
 
 		setRotation(rotation);
-		
+
 		resetControls();
 	}
-	
+
 	private void checkHealth() {
 		if(health <= 0){
 			System.out.println("NO HEALTH. GAME OVER. ESCAPE FAILED!!");
@@ -163,36 +163,36 @@ public class Car extends Sprite{
 			Gdx.app.exit();
 		}
 	}
-    
+
 	public void reduceHealth(float damage) {
 		health -= damage;
 	}
-	
+
 	public void applyForwardAcceleration(){
 		// Can't accelerate if you are on mud!
 		if(!(World.lookUp(getX(), getY()) instanceof MudTrap)){
 			accelerating = true;
 		}
-		
+
 	}
-	
+
 	public void applyReverseAcceleration(){
 		// Can't reverse if you are on mud!
 		if(!(World.lookUp(getX(), getY()) instanceof MudTrap)){
 			reversing = true;
 			wasReversing = true;
 		}
-		
+
 	}
-	
+
 	public void brake(){
 		handBrake = true;
 	}
-	
-	
+
+
 	/** Snap to an orientation if you get close to it! **/
 	public void turnLeft(float delta){
-		
+
 		angle += ROTATING_FACTOR * delta;
 		if(reversing){
 			angle *= -1;
@@ -204,7 +204,7 @@ public class Car extends Sprite{
 	private void snapTo(boolean reversing, WorldSpatial.Direction currentOrientation, WorldSpatial.RelativeDirection turnDirection) {
 		float angleDifference = SNAP_THRESHOLD;
 		if((!reversing && turnDirection.equals(WorldSpatial.RelativeDirection.LEFT)) || (reversing && turnDirection.equals(WorldSpatial.RelativeDirection.RIGHT))){
-			
+
 			switch(currentOrientation){
 			case EAST:
 				angleDifference = WorldSpatial.NORTH_DEGREE - getAngle();
@@ -236,7 +236,7 @@ public class Car extends Sprite{
 				break;
 			default:
 				break;
-			
+
 			}
 
 		}
@@ -272,10 +272,10 @@ public class Car extends Sprite{
 				break;
 			default:
 				break;
-			
+
 			}
 		}
-		
+
 	}
 
 
@@ -288,11 +288,11 @@ public class Car extends Sprite{
 		snapTo(reversing,currentOrientation,WorldSpatial.RelativeDirection.RIGHT);
 
 	}
-	
-	private void applySteering(){
-		
 
-		if(velocity.len() > TURN_EPSILON && !handBrake && !(World.lookUp(getX(), getY()) instanceof GrassTrap)) { 
+	private void applySteering(){
+
+
+		if(velocity.len() > TURN_EPSILON && !handBrake && !(World.lookUp(getX(), getY()) instanceof GrassTrap)) {
 
 			rotation += angle;
 
@@ -306,13 +306,13 @@ public class Car extends Sprite{
 			}
 		}
 	}
-	
+
 	private Vector2 calculateAcceleration(float drivingForce, float frictionForce){
 
 		Vector2 acceleration = new Vector2(1,0);
 		acceleration.rotate(rotation);
 		acceleration.scl(drivingForce);
-		
+
 
 		Vector2 friction = new Vector2(1,0);
 		if(acceleration.len() > 0){
@@ -325,13 +325,13 @@ public class Car extends Sprite{
 		friction.scl(frictionForce);
 
 
-		
+
 		Vector2 netAcceleration = acceleration.add(friction);
 		return netAcceleration;
 	}
-	
+
 	private void applyAcceleration(Vector2 acceleration, float delta){
-		
+
 
 		this.velocity.setAngle(rotation);
 
@@ -345,12 +345,12 @@ public class Car extends Sprite{
 			this.velocity.y += acceleration.y * delta;
 		}
 
-	
+
 
 		if(this.velocity.len() > MAX_SPEED && !reversing) {
 			float scalar = this.velocity.len() / MAX_SPEED;
 			this.velocity.scl(1/scalar);
-		} 
+		}
 		else if(this.velocity.len() > MAX_REVERSE_SPEED && reversing){
 			float scalar = this.velocity.len() / MAX_REVERSE_SPEED;
 			this.velocity.scl(1/scalar);
@@ -369,11 +369,11 @@ public class Car extends Sprite{
 			}
 		}
 		if(carDirection.equals(State.REVERSE)){
-			
+
 			velocity.rotate(180);
 		}
 	}
-	
+
 	private void setPosition(Vector2 velocity, float delta){
 		double xOffset = ((CAR_WIDTH / 2)*1.0/World.MAP_PIXEL_SIZE);
 		double yOffset = ((CAR_HEIGHT/2)*1.0/World.MAP_PIXEL_SIZE);
@@ -386,7 +386,7 @@ public class Car extends Sprite{
 		if(velocity.x < 0){
 			futureX -= xOffset;
 		}
-		
+
 		if(velocity.y > 0){
 			futureY += yOffset;
 		}
@@ -405,9 +405,9 @@ public class Car extends Sprite{
 			velocity.y = 0;
 			reduceHealth(5 * delta);
 		}
-		
+
 	}
-	
+
 	private void resetControls(){
 		angle = 0;
 		reversing = false;
@@ -418,13 +418,13 @@ public class Car extends Sprite{
 	public void draw(SpriteBatch spriteBatch){
 		update(Gdx.graphics.getDeltaTime());
 	}
-	
+
 	private ArrayList<Integer> getStartPosition(){
-		
+
 		ArrayList<Integer> startLocation = new ArrayList<Integer>();
 
 		TiledMapTileLayer utilityLayer = (TiledMapTileLayer) World.getMap().getLayers().get("Utility");
-		
+
 
 		for(int x = 0; x < utilityLayer.getWidth(); x++){
 			for(int y = 0; y < utilityLayer.getHeight(); y++){
@@ -441,7 +441,7 @@ public class Car extends Sprite{
 		}
 		return startLocation;
 	}
-	
+
 
 	public void checkTrap(MapTile currentTile, float delta){
 
@@ -450,36 +450,36 @@ public class Car extends Sprite{
 			trapTile.applyTo(this, delta);
 		}
 	}
-	
+
 	public void setVelocity(float x, float y) { /* Better if this wasn't public but needed in traps */
 		velocity.x = x;
 		velocity.y = y;
 	}
-	
+
 
 	public void setVelocity(Vector2 scl) {
 		this.velocity = scl;
-		
+
 	}
-	
+
 	/** ACCESSIBLE METHODS **/
 	public float getVelocity(){
 		return velocity.len();
 	}
-	
+
 	public Vector2 getRawVelocity(){
 		return velocity;
 	}
-	
 
-	
-	
+
+
+
 	// Given a velocity and the degree I want to end up on,
 	// where will I be? Note: This method is a composition of other methods used above, would be best
 	// if physics calculations were abstracted into their own class.
 	public PeekTuple peek(Vector2 velocity, float degree, WorldSpatial.RelativeDirection turnDirection, float delta){
-		
-		
+
+
 		float currentAngle = angle;
 		float currentRotation = rotation;
 		boolean currentlyAccelerating = this.accelerating;
@@ -488,20 +488,29 @@ public class Car extends Sprite{
 		float currentY = getY();
 		Vector2 currentVelocity = new Vector2(velocity.x,velocity.y);
 		State currentCarDirection = carDirection;
-		float timeDifference = Math.abs(rotation-degree) / (ROTATING_FACTOR * delta);
-		
+
+
 		boolean reachable = true;
-		
+
 		// Convert degree to the right orientation based on turning direction
 		// Going right are negative values while going left is positive.
 		if(turnDirection.equals(WorldSpatial.RelativeDirection.RIGHT) && degree > 0){
 			degree = 0 - degree;
 		}
-		
+
 		if(turnDirection.equals(WorldSpatial.RelativeDirection.LEFT) && degree < 0){
 			degree = 360 - degree;
 		}
-		
+
+		float timeDifference = -1;
+		if(degree > 0){
+			timeDifference = ((Math.abs(currentRotation-degree) % 360 + 360) % 360) / (ROTATING_FACTOR * delta);
+		}
+		else{
+			timeDifference = ((Math.abs(currentRotation+degree) % 360 + 360) % 360) / (ROTATING_FACTOR * delta);
+		}
+				
+
 		for(int i = 0; i < (int) Math.round(timeDifference); i++){
 			if((currentRotation < degree && turnDirection.equals(WorldSpatial.RelativeDirection.LEFT) || (currentRotation > degree && turnDirection.equals(WorldSpatial.RelativeDirection.RIGHT)))){
 				// Calculate Right turns
@@ -520,11 +529,11 @@ public class Car extends Sprite{
 				}
 			}
 
-				
-			
 
-			
-			if(currentVelocity.len() > EPSILON) { 
+
+
+
+			if(currentVelocity.len() > EPSILON) {
 				// Update our rotation
 				currentRotation += currentAngle;
 				// Slowly return our rotation to 0 if not turning
@@ -537,13 +546,13 @@ public class Car extends Sprite{
 					currentAngle = 0;
 				}
 			}
-			
+
 			// Create an acceleration vector by rotating a unit vector
 			// and scaling with the appropriate force
 			Vector2 acceleration = new Vector2(1,0);
 			acceleration.rotate(currentRotation);
 			acceleration.scl(ACCELERATION);
-			
+
 			// Create a friction vector
 			Vector2 friction = new Vector2(1,0);
 			if(acceleration.len() > 0){
@@ -556,11 +565,11 @@ public class Car extends Sprite{
 			friction.scl(FRICTION_FORCE);
 
 			// Calculate net change
-			
-			Vector2 netAcceleration = acceleration.add(friction);
-			
 
-			
+			Vector2 netAcceleration = acceleration.add(friction);
+
+
+
 			// Calculating the movement
 			// Rotate our velocity (highly simplified effect of rotating the car) and update with acceleration
 			currentVelocity.setAngle(currentRotation);
@@ -572,12 +581,12 @@ public class Car extends Sprite{
 				currentVelocity.x += netAcceleration.x * delta;
 				currentVelocity.y += netAcceleration.y * delta;
 			}
-			
+
 			// If we get greater than max velocity then limit us to that, if we're smaller than epsilon stop
 			if(currentVelocity.len() > MAX_SPEED ) {
 				float scalar = currentVelocity.len() / MAX_SPEED;
 				currentVelocity.scl(1/scalar);
-			} 
+			}
 			else if (currentVelocity.len() < EPSILON){
 				currentVelocity.x = 0;
 				currentVelocity.y = 0;
@@ -588,28 +597,28 @@ public class Car extends Sprite{
 					currentCarDirection = State.FORWARD;
 				}
 			}
-			
+
 			if(currentCarDirection.equals(State.REVERSE)){
-				
+
 				currentVelocity.rotate(180);
 			}
-			
+
 			currentX += currentVelocity.x * delta;
 			currentY += currentVelocity.y * delta;
-			
+
 			// Check if you will hit a wall
 			if(World.lookUp(currentX, currentY).getName().equals("Wall")){
 				reachable = false;
 			}
 			currentAngle = 0;
 		}
-		
-		
+
+
 
 		return new PeekTuple(new Coordinate(Math.round(currentX), Math.round(currentY)),reachable);
-		
+
 	}
-	
+
 	// Debug mode for the car
 	public void printDebug(){
 		logger.info(
@@ -619,34 +628,34 @@ public class Car extends Sprite{
 				"Current Tile: "+World.lookUp(getX(), getY()).getName()+"\n\n"
 				);
 	}
-	
+
 	public float getAngle(){
 		return (rotation % 360 + 360) % 360;
 	}
-	
+
 	public HashMap<Coordinate,MapTile> getView(){
 		int currentX = Math.round(getX());
 		int currentY = Math.round(getY());
-		
+
 		HashMap<Coordinate,MapTile> subMap = new HashMap<Coordinate,MapTile>();
 		for(int x = currentX - VIEW_SQUARE; x <= currentX+VIEW_SQUARE; x++){
 			for(int y = currentY - VIEW_SQUARE; y <= currentY+VIEW_SQUARE; y++){
 				MapTile tile = World.lookUp(x,y);
 				subMap.put(new Coordinate(x,y),tile);
-				
+
 			}
 		}
-		
+
 		return subMap;
 	}
-	
+
 	public String getPosition(){
 		return Math.round(this.getX())+","+Math.round(this.getY());
 	}
 	public int getHealth(){
 		return this.health;
 	}
-	
+
 	public WorldSpatial.Direction getOrientation(){
 		return this.currentOrientation;
 	}
@@ -655,6 +664,6 @@ public class Car extends Sprite{
 
 
 
-	
-	
+
+
 }

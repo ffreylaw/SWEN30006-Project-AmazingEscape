@@ -233,7 +233,6 @@ public class AIController extends CarController {
 			break;
 		
 		}
-		
 	}
 	
 	/**

@@ -113,7 +113,7 @@ public class MyAIController extends CarController {
 	 * @param lastTurnDirection
 	 * @param delta
 	 */
-	private void readjust(WorldSpatial.RelativeDirection lastTurnDirection, float delta) {
+	public void readjust(WorldSpatial.RelativeDirection lastTurnDirection, float delta) {
 		if(lastTurnDirection != null){
 			if (!isTurningRight && lastTurnDirection.equals(WorldSpatial.RelativeDirection.RIGHT)){
 				adjustRight(getOrientation(), delta);
@@ -368,5 +368,31 @@ public class MyAIController extends CarController {
 	public boolean isTurningRight() {
 		return this.isTurningRight;
 	}
+
+	public void setTurningLeft(boolean isTurningLeft) {
+		this.isTurningLeft = isTurningLeft;
+	}
+
+	public void setTurningRight(boolean isTurningRight) {
+		this.isTurningRight = isTurningRight;
+	}
+	
+	public WorldSpatial.RelativeDirection getLastTurnDirection() {
+		return lastTurnDirection;
+	}
+
+	public void setLastTurnDirection(WorldSpatial.RelativeDirection lastTurnDirection) {
+		this.lastTurnDirection = lastTurnDirection;
+	}
+
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+	
+	
 	
 }

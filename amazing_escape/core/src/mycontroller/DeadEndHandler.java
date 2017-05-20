@@ -2,28 +2,35 @@ package mycontroller;
 
 import java.util.HashMap;
 
-import controller.CarController;
 import tiles.MapTile;
 import utilities.Coordinate;
 
 public class DeadEndHandler {
 	
-	private DeadEndAction uTurn;
-	private DeadEndAction threePointTurn;
-	private DeadEndAction reverseOut;
+	private DeadEndAction currentAction;
 	
 	public DeadEndHandler() {
-		this.uTurn = new UTurn();
-		this.threePointTurn = new ThreePointTurn();
-		this.reverseOut = new ReverseOut();
+		currentAction = null;
 	}
 	
-	public boolean checkDeadEnd(HashMap<Coordinate, MapTile> currentView) {
+	public boolean checkDeadEnd(Coordinate currentPosition, HashMap<Coordinate, MapTile> currentView) {
+		
 		return false;
 	}
 	
-	public void handle(CarController controller, float delta) {
-		
+	public void handle(MyAIController controller, float delta) {
+		if (currentAction == null) {
+			currentAction = chooseAction();
+		} else {
+			currentAction.action(controller, delta);
+			if (controller.getState() != MyAIController.State.DEAD_END) {
+				currentAction = null;
+			}
+		}
+	}
+	
+	private DeadEndAction chooseAction() {
+		return null;
 	}
 
 }

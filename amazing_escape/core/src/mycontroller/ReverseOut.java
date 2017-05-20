@@ -1,6 +1,5 @@
 package mycontroller;
 
-import controller.CarController;
 
 public class ReverseOut implements DeadEndAction {
 	
@@ -9,7 +8,7 @@ public class ReverseOut implements DeadEndAction {
 	}
 
 	@Override
-	public void action(CarController controller, float delta) {
+	public void action(MyAIController controller, float delta) {
 		
 	}
 
