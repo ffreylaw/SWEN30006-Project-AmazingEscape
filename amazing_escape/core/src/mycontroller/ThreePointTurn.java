@@ -18,13 +18,26 @@ public class ThreePointTurn implements DeadEndAction {
 	public void action(MyAIController controller, float delta) {
 		switch (point) {
 		case 1:
-			applyFirstPoint(controller, controller.getOrientation(), delta);
+			if (checkEndPoint(new Coordinate(controller.getPosition()), controller.getView())) {
+				applyFirstPoint(controller, controller.getOrientation(), delta);
+			} else {
+				point++;
+			}
 			break;
 		case 2:
-			applySecondPoint(controller, controller.getOrientation(), delta);
+			if (checkEndPoint(new Coordinate(controller.getPosition()), controller.getView())) {
+				applySecondPoint(controller, controller.getOrientation(), delta);
+			} else {
+				point++;
+			}
 			break;
 		case 3:
-			applyThirdPoint(controller, controller.getOrientation(), delta);
+			if (checkEndPoint(new Coordinate(controller.getPosition()), controller.getView())) {
+				applyThirdPoint(controller, controller.getOrientation(), delta);
+			} else {
+				point = 1;
+				controller.setState(MyAIController.State.FOLLOWING_WALL);
+			}
 			break;
 		}
 	}
