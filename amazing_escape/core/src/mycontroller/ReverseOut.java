@@ -4,6 +4,9 @@ import world.WorldSpatial;
 
 public class ReverseOut implements DeadEndAction {
 	
+	private boolean isReverseTurningLeft;
+	private boolean isReverseTurningRight;
+	
 	public ReverseOut() {
 		
 	}
@@ -13,7 +16,11 @@ public class ReverseOut implements DeadEndAction {
 		
 	}
 	
-	private void applyReverse(MyAIController controller, WorldSpatial.Direction orientation, float delta) {
+	private void applyReverseLeft(MyAIController controller, WorldSpatial.Direction orientation, float delta) {
+		
+	}
+	
+	private void applyReverseRight(MyAIController controller, WorldSpatial.Direction orientation, float delta) {
 		
 	}
 
