@@ -1,5 +1,9 @@
 package mycontroller;
 
+import java.util.HashMap;
+
+import tiles.MapTile;
+import utilities.Coordinate;
 import world.WorldSpatial;
 
 public class ReverseOut implements DeadEndAction {
@@ -8,7 +12,8 @@ public class ReverseOut implements DeadEndAction {
 	private boolean isReverseTurningRight;
 	
 	public ReverseOut() {
-		
+		isReverseTurningLeft = false;
+		isReverseTurningRight = false;
 	}
 
 	@Override
@@ -22,6 +27,21 @@ public class ReverseOut implements DeadEndAction {
 	
 	private void applyReverseRight(MyAIController controller, WorldSpatial.Direction orientation, float delta) {
 		
+	}
+	
+	private boolean checkWallBehind(MyAIController controller, WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView){
+		switch (orientation) {
+		case EAST:
+			return controller.checkWest(currentView);
+		case NORTH:
+			return controller.checkSouth(currentView);
+		case SOUTH:
+			return controller.checkNorth(currentView);
+		case WEST:
+			return controller.checkEast(currentView);
+		default:
+			return false;
+		}
 	}
 
 }

@@ -269,7 +269,7 @@ public class MyAIController extends CarController {
 	 * @param currentView what the car can currently see
 	 * @return
 	 */
-	private boolean checkWallAhead(WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView){
+	public boolean checkWallAhead(WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView){
 		switch (orientation) {
 		case EAST:
 			return checkEast(currentView);
@@ -290,7 +290,7 @@ public class MyAIController extends CarController {
 	 * @param currentView
 	 * @return
 	 */
-	private boolean checkFollowingWall(WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView) {
+	public boolean checkFollowingWall(WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView) {
 		switch (orientation) {
 		case EAST:
 			return checkNorth(currentView);
