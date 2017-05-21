@@ -20,7 +20,7 @@ public class DeadEndHandler {
 	
 	public void handle(MyAIController controller, float delta) {
 		if (currentAction == null) {
-			currentAction = chooseAction();
+			currentAction = chooseAction(new Coordinate(controller.getPosition()), controller.getView());
 		} else {
 			currentAction.action(controller, delta);
 			if (controller.getState() != MyAIController.State.DEAD_END) {
@@ -29,7 +29,7 @@ public class DeadEndHandler {
 		}
 	}
 	
-	private DeadEndAction chooseAction() {
+	private DeadEndAction chooseAction(Coordinate currentPosition, HashMap<Coordinate, MapTile> currentView) {
 		return null;
 	}
 

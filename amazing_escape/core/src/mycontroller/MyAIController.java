@@ -186,7 +186,7 @@ public class MyAIController extends CarController {
 	/**
 	 * Turn the car counter clock wise (think of a compass going counter clock-wise)
 	 */
-	private void applyLeftTurn(WorldSpatial.Direction orientation, float delta) {
+	public void applyLeftTurn(WorldSpatial.Direction orientation, float delta) {
 		switch (orientation) {
 		case EAST:
 			if (!getOrientation().equals(WorldSpatial.Direction.NORTH)) {
@@ -216,7 +216,7 @@ public class MyAIController extends CarController {
 	/**
 	 * Turn the car clock wise (think of a compass going clock-wise)
 	 */
-	private void applyRightTurn(WorldSpatial.Direction orientation, float delta) {
+	public void applyRightTurn(WorldSpatial.Direction orientation, float delta) {
 		switch (orientation) {
 		case EAST:
 			if (!getOrientation().equals(WorldSpatial.Direction.SOUTH)) {

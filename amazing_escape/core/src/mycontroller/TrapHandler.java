@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import tiles.MapTile;
 import utilities.Coordinate;
+import world.WorldSpatial;
 
 public class TrapHandler {
 	
@@ -18,6 +19,14 @@ public class TrapHandler {
 	public void handle(MyAIController controller, float delta) {
 		
 		controller.changeState(MyAIController.State.NONE);
+	}
+	
+	private void applyChangeLeftLane(int n, WorldSpatial.Direction orientation, float delta) {
+		
+	}
+	
+	private void applyChangeRightLane(int n, WorldSpatial.Direction orientation, float delta) {
+		
 	}
 	
 }
