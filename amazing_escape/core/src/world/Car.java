@@ -655,15 +655,12 @@ public class Car extends Sprite{
 	public int getHealth(){
 		return this.health;
 	}
+	
+	public boolean isReversing() {
+		return reversing;
+	}
 
 	public WorldSpatial.Direction getOrientation(){
 		return this.currentOrientation;
 	}
-
-
-
-
-
-
-
 }

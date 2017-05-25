@@ -131,4 +131,8 @@ public abstract class CarController {
 	 * This is the required update step for a vehicle.
 	 */
 	public abstract void update(float delta);
+	
+	public boolean isReversing() {
+		return car.isReversing();
+	}
 }

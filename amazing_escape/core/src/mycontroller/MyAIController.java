@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import controller.CarController;
 import tiles.MapTile;
+import tiles.TrapTile;
 import utilities.Coordinate;
 import world.Car;
 import world.WorldSpatial;
@@ -39,6 +40,12 @@ public class MyAIController extends CarController {
 	@Override
 	public void update(float delta) {
 		checkDirectionChange();
+//		updateState();
+		
+		Coordinate currentPosition = new Coordinate(getPosition());
+		
+		System.out.println("x = " + currentPosition.x + ", y = " + currentPosition.y);
+		System.out.println("state " + state);
 		
 		switch (this.state) {
 		case NONE: 		 	 handleNone(delta);						break;
@@ -46,6 +53,73 @@ public class MyAIController extends CarController {
 		case DEAD_END: 		 deadEndHandler.handle(this, delta);	break;
 		case TRAP:			 trapHandler.handle(this, delta);		break;
 		}
+	}
+	
+	private void updateState() {
+		if(state == State.NONE || state == State.FOLLOWING_WALL) {
+			if(checkDeadEnd()) {  // dead end detected
+				state = State.DEAD_END;
+			} else if(checkTrap()) {  // traps detected
+				state = State.TRAP;
+			}
+		} else if(state == State.TRAP) {
+			if(!checkTrap()) {  // no more traps
+				state = State.NONE;
+			}
+		}
+	}
+	
+	/** Check if any traps at the front view of the car */
+	private boolean checkTrap() {
+		HashMap<Coordinate, MapTile> currentView = getView();
+		Coordinate currentPosition = new Coordinate(getPosition());
+		switch (getOrientation()) {
+		case EAST:
+			for(int i=1; i<=3; i++) {  // right
+				for(int j=-3; j<=3; j++) {  // bot to top
+					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
+					if(tile instanceof TrapTile) {  // trap detected
+						return true;
+					}
+				}
+			}
+			break;
+		case NORTH:
+			for(int i=-3; i<=3; i++) {  // left to right
+				for(int j=1; j<=3; j++) {  // top
+					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
+					if(tile instanceof TrapTile) {  // trap detected
+						return true;
+					}
+				}
+			}
+			break;
+		case SOUTH:
+			for(int i=-3; i<=3; i++) {  // left to right
+				for(int j=-3; j<=-1; j++) {  // bot
+					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
+					if(tile instanceof TrapTile) {  // trap detected
+						return true;
+					}
+				}
+			}
+			break;
+		case WEST:
+			for(int i=-3; i<=-1; i++) {  // left
+				for(int j=-3; j<=3; j++) {  // bot to top
+					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
+					if(tile instanceof TrapTile) {  // trap detected
+						return true;
+					}
+				}
+			}
+			break;
+		}
+		return false;
+	}
+	
+	private boolean checkDeadEnd() {
+		return false;
 	}
 	
 	public void changeState(State state) {

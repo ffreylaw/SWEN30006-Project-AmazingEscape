@@ -34,7 +34,7 @@ public class Simulation extends ApplicationAdapter implements InputProcessor {
 	OrthogonalTiledMapRenderer tiledMapRenderer;
 	private enum CameraMode {WORLD, PLAYER};
 	private static CameraMode CAMERA_MODE = CameraMode.WORLD;
-	private static final int PLAYER_VIEW = 11;
+	private static final int PLAYER_VIEW = 7;
 	private static boolean gameWon = false;
 	public static boolean DEBUG_MODE = false;
 	private BitmapFont font;
