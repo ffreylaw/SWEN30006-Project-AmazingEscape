@@ -34,7 +34,7 @@ public class MyAIController extends CarController {
 		super(car);
 		this.deadEndHandler = new DeadEndHandler();
 		this.trapHandler = new TrapHandler();
-		this.state = State.NONE;
+		this.state = State.DEAD_END;
 	}
 
 	@Override
@@ -127,7 +127,6 @@ public class MyAIController extends CarController {
 	}
 	
 	public void handleNone(float delta) {
-		System.out.println("hehe");
 		HashMap<Coordinate, MapTile> currentView = getView();
 		
 		if (getVelocity() < CAR_SPEED) {

@@ -30,7 +30,7 @@ public class DeadEndHandler {
 	}
 	
 	private DeadEndAction chooseAction(Coordinate currentPosition, HashMap<Coordinate, MapTile> currentView) {
-		return new UTurn();
+		return new ReverseOut();
 	}
 
 }

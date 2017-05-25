@@ -28,28 +28,28 @@ public class UTurn implements DeadEndAction {
 			if (controller.getVelocity() < 1) {
 				controller.applyForwardAcceleration();
 			} else {
-			
-				if (targetOrientation == null) {
-					switch (currentOrientation) {
-					case EAST:
-						targetOrientation = WorldSpatial.Direction.WEST;
-						break;
-					case SOUTH:
-						targetOrientation = WorldSpatial.Direction.NORTH;
-						break;
-					case WEST:
-						targetOrientation = WorldSpatial.Direction.EAST;
-						break;
-					case NORTH:
-						targetOrientation = WorldSpatial.Direction.SOUTH;
-						break;
-					}
-				} else if (currentOrientation != targetOrientation) {
-					applyUTurn(controller, delta);
-				} else {
-					targetOrientation = null;
-					isDone = true;
-				}
+				applyUTurn(controller, delta);
+//				if (targetOrientation == null) {
+//					switch (currentOrientation) {
+//					case EAST:
+//						targetOrientation = WorldSpatial.Direction.WEST;
+//						break;
+//					case SOUTH:
+//						targetOrientation = WorldSpatial.Direction.NORTH;
+//						break;
+//					case WEST:
+//						targetOrientation = WorldSpatial.Direction.EAST;
+//						break;
+//					case NORTH:
+//						targetOrientation = WorldSpatial.Direction.SOUTH;
+//						break;
+//					}
+//				} else if (currentOrientation != targetOrientation) {
+//					applyUTurn(controller, delta);
+//				} else {
+//					targetOrientation = null;
+//					isDone = true;
+//				}
 			}
 		}
 	}
