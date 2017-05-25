@@ -21,11 +21,11 @@ public class ReverseOut implements DeadEndAction {
 		
 	}
 	
-	private void applyReverseLeft(MyAIController controller, WorldSpatial.Direction orientation, float delta) {
+	private void applyReverseLeft(MyAIController controller, float delta) {
 		
 	}
 	
-	private void applyReverseRight(MyAIController controller, WorldSpatial.Direction orientation, float delta) {
+	private void applyReverseRight(MyAIController controller, float delta) {
 		
 	}
 	

@@ -18,22 +18,22 @@ public class ThreePointTurn implements DeadEndAction {
 	public void action(MyAIController controller, float delta) {
 		switch (point) {
 		case 1:
-			if (checkEndPoint(new Coordinate(controller.getPosition()), controller.getView())) {
-				applyFirstPoint(controller, controller.getOrientation(), delta);
+			if (checkEndPoint(controller)) {
+				applyFirstPoint(controller, delta);
 			} else {
 				point++;
 			}
 			break;
 		case 2:
-			if (checkEndPoint(new Coordinate(controller.getPosition()), controller.getView())) {
-				applySecondPoint(controller, controller.getOrientation(), delta);
+			if (checkEndPoint(controller)) {
+				applySecondPoint(controller, delta);
 			} else {
 				point++;
 			}
 			break;
 		case 3:
-			if (checkEndPoint(new Coordinate(controller.getPosition()), controller.getView())) {
-				applyThirdPoint(controller, controller.getOrientation(), delta);
+			if (checkEndPoint(controller)) {
+				applyThirdPoint(controller, delta);
 			} else {
 				point = 1;
 				controller.setState(MyAIController.State.FOLLOWING_WALL);
@@ -42,19 +42,19 @@ public class ThreePointTurn implements DeadEndAction {
 		}
 	}
 	
-	private boolean checkEndPoint(Coordinate currentPosition, HashMap<Coordinate, MapTile> currentView) {
+	private boolean checkEndPoint(MyAIController controller) {
 		return false;
 	}
 	
-	private void applyFirstPoint(MyAIController controller, WorldSpatial.Direction orientation, float delta) {
+	private void applyFirstPoint(MyAIController controller, float delta) {
 		
 	}
 	
-	private void applySecondPoint(MyAIController controller, WorldSpatial.Direction orientation, float delta) {
+	private void applySecondPoint(MyAIController controller, float delta) {
 		
 	}
 	
-	private void applyThirdPoint(MyAIController controller, WorldSpatial.Direction orientation, float delta) {
+	private void applyThirdPoint(MyAIController controller, float delta) {
 		
 	}
 

@@ -24,9 +24,9 @@ public class MyAIController extends CarController {
 	private WorldSpatial.RelativeDirection lastTurnDirection = null;
 	private WorldSpatial.Direction previousDirection = null;
 	
-	private static final float CAR_SPEED = 3;
-	private static final int WALL_SENSITIVITY = 2;
-	private static final int EAST_THRESHOLD = 3;
+	public static final float CAR_SPEED = 3;
+	public static final int WALL_SENSITIVITY = 2;
+	public static final int EAST_THRESHOLD = 3;
 	
 
 	public MyAIController(Car car) {
@@ -53,6 +53,7 @@ public class MyAIController extends CarController {
 	}
 	
 	public void handleNone(float delta) {
+		System.out.println("hehe");
 		HashMap<Coordinate, MapTile> currentView = getView();
 		
 		if (getVelocity() < CAR_SPEED) {
@@ -69,7 +70,7 @@ public class MyAIController extends CarController {
 				lastTurnDirection = WorldSpatial.RelativeDirection.RIGHT;
 				applyRightTurn(getOrientation(), delta);
 			} else {
-				changeState(State.FOLLOWING_WALL);
+				changeState(State.FOLLOWING_WALL);	//test
 			}
 		}
 	}
@@ -113,7 +114,7 @@ public class MyAIController extends CarController {
 	 * @param lastTurnDirection
 	 * @param delta
 	 */
-	public void readjust(WorldSpatial.RelativeDirection lastTurnDirection, float delta) {
+	private void readjust(WorldSpatial.RelativeDirection lastTurnDirection, float delta) {
 		if(lastTurnDirection != null){
 			if (!isTurningRight && lastTurnDirection.equals(WorldSpatial.RelativeDirection.RIGHT)){
 				adjustRight(getOrientation(), delta);
@@ -121,14 +122,13 @@ public class MyAIController extends CarController {
 				adjustLeft(getOrientation(), delta);
 			}
 		}
-		
 	}
 	
 	/**
 	 * Try to orient myself to a degree that I was supposed to be at if I am
 	 * misaligned.
 	 */
-	private void adjustLeft(WorldSpatial.Direction orientation, float delta) {
+	public void adjustLeft(WorldSpatial.Direction orientation, float delta) {
 		
 		switch(orientation){
 		case EAST:
@@ -156,7 +156,7 @@ public class MyAIController extends CarController {
 		}
 	}
 
-	private void adjustRight(WorldSpatial.Direction orientation, float delta) {
+	public void adjustRight(WorldSpatial.Direction orientation, float delta) {
 		switch (orientation) {
 		case EAST:
 			if (getAngle() > WorldSpatial.SOUTH_DEGREE && getAngle() < WorldSpatial.EAST_DEGREE_MAX) {

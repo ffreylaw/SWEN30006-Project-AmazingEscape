@@ -8,48 +8,55 @@ import world.WorldSpatial;
 
 public class UTurn implements DeadEndAction {
 	
-	private boolean isTurningLeftU;
-	private boolean isTurningRightU;
+	private WorldSpatial.Direction targetOrientation;
+	
+	private boolean isDone;
 	
 	public UTurn() {
-		isTurningLeftU = false;
-		isTurningRightU = false;
+		targetOrientation = null;
+		isDone = false;
 	}
 
 	@Override
 	public void action(MyAIController controller, float delta) {
 		HashMap<Coordinate, MapTile> currentView = controller.getView();
+		WorldSpatial.Direction currentOrientation = controller.getOrientation();
 		
-	}
-	
-	private void applyLeftUTurn(MyAIController controller, WorldSpatial.Direction orientation, float delta) {
-		switch(orientation){
-		case EAST:
-			if(!controller.getOrientation().equals(WorldSpatial.Direction.WEST)){
-				controller.turnLeft(delta);
+		if (isDone) {
+			controller.applyBrake();
+		} else {
+			if (controller.getVelocity() < 1) {
+				controller.applyForwardAcceleration();
+			} else {
+			
+				if (targetOrientation == null) {
+					switch (currentOrientation) {
+					case EAST:
+						targetOrientation = WorldSpatial.Direction.WEST;
+						break;
+					case SOUTH:
+						targetOrientation = WorldSpatial.Direction.NORTH;
+						break;
+					case WEST:
+						targetOrientation = WorldSpatial.Direction.EAST;
+						break;
+					case NORTH:
+						targetOrientation = WorldSpatial.Direction.SOUTH;
+						break;
+					}
+				} else if (currentOrientation != targetOrientation) {
+					applyUTurn(controller, delta);
+				} else {
+					targetOrientation = null;
+					isDone = true;
+				}
 			}
-			break;
-		case NORTH:
-			if(!controller.getOrientation().equals(WorldSpatial.Direction.SOUTH)){
-				controller.turnLeft(delta);
-			}
-			break;
-		case SOUTH:
-			if(!controller.getOrientation().equals(WorldSpatial.Direction.NORTH)){
-				controller.turnLeft(delta);
-			}
-			break;
-		case WEST:
-			if(!controller.getOrientation().equals(WorldSpatial.Direction.EAST)){
-				controller.turnLeft(delta);
-			}
-			break;
-		default:
-			break;
 		}
 	}
 	
-	private void applyRightUTurn(MyAIController controller, WorldSpatial.Direction orientation, float delta) {
+	
+	private void applyUTurn(MyAIController controller, float delta) {
+		WorldSpatial.Direction orientation = controller.getOrientation();
 		switch(orientation){
 		case EAST:
 			if(!controller.getOrientation().equals(WorldSpatial.Direction.WEST)){
