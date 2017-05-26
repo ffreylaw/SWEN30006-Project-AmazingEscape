@@ -39,7 +39,7 @@ public class MyAIController extends CarController {
 
 	@Override
 	public void update(float delta) {
-		checkDirectionChange();
+//		checkDirectionChange();
 //		updateState();
 		
 		Coordinate currentPosition = new Coordinate(getPosition());
@@ -128,6 +128,7 @@ public class MyAIController extends CarController {
 	
 	public void handleNone(float delta) {
 		HashMap<Coordinate, MapTile> currentView = getView();
+		checkDirectionChange();
 		
 		if (getVelocity() < CAR_SPEED) {
 			applyForwardAcceleration();
@@ -150,6 +151,7 @@ public class MyAIController extends CarController {
 	
 	public void handleFollowingWall(float delta) {
 		HashMap<Coordinate, MapTile> currentView = getView();
+		checkDirectionChange();
 		
 		// Readjust the car if it is misaligned.
 		readjust(lastTurnDirection, delta);
@@ -363,7 +365,7 @@ public class MyAIController extends CarController {
 	 * @param currentView
 	 * @return
 	 */
-	public boolean checkFollowingWall(WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView) {
+	private boolean checkFollowingWall(WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView) {
 		switch (orientation) {
 		case EAST:
 			return checkNorth(currentView);
@@ -456,6 +458,14 @@ public class MyAIController extends CarController {
 
 	public void setLastTurnDirection(WorldSpatial.RelativeDirection lastTurnDirection) {
 		this.lastTurnDirection = lastTurnDirection;
+	}
+
+	public WorldSpatial.Direction getPreviousDirection() {
+		return previousDirection;
+	}
+
+	public void setPreviousDirection(WorldSpatial.Direction previousDirection) {
+		this.previousDirection = previousDirection;
 	}
 
 	public State getState() {
