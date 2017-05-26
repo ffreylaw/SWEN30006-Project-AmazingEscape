@@ -24,34 +24,48 @@ public class TrapHandler {
 			movReverse(controller);
 			needLaneChange = true;
 		} else if(tile2.getName().equals("Wall")) {  // wall at 2 tile away
-			if(tile1.getName().equals("Grass")) {
+			if(tile1.getName().equals("Grass")) {  // grass in front
 				movReverse(controller);
 				needLaneChange = true;
-			} else {
-				changeLane(controller, delta);
-				needLaneChange = false;
-			}
-		} else if(tile3.getName().equals("Wall")) {  // wall at 3 tile away
-			if(tile2.getName().equals("Grass")) {
-				if(tile1.getName().equals("Grass")) {
-					movReverse(controller);
-					needLaneChange = true;
-				} else {
+			} else {  // no grass in front
+				if(canChangeLane()) {
 					changeLane(controller, delta);
 					needLaneChange = false;
+				} else {
+					movReverse(controller);
+					needLaneChange = true;
 				}
-			} else {
-				if(tile1.getName().equals("Grass")) {
+			}
+		} else if(tile3.getName().equals("Wall")) {  // wall at 3 tile away
+			if(tile2.getName().equals("Grass")) {  // grass at 2 tile away
+				if(tile1.getName().equals("Grass")) {  // grass in front
+					movReverse(controller);
+					needLaneChange = true;
+				} else {   // no grass in front
+					if(canChangeLane()) {
+						changeLane(controller, delta);
+						needLaneChange = false;
+					} else {
+						movReverse(controller);
+						needLaneChange = true;
+					}
+				}
+			} else {  // no grass at two 2 tile away
+				if(tile1.getName().equals("Grass")) {  // grass in front
 					if(needLaneChange == true) {
 						movReverse(controller);
 						needLaneChange = true;
 					} else {
 						movForward(controller);
 					}
-				} else {
+				} else {  // no grass in front
 					if(needLaneChange == true) {
-						changeLane(controller, delta);
-						needLaneChange = false;
+						if(canChangeLane()) {
+							changeLane(controller, delta);
+							needLaneChange = false;
+						} else {
+							movReverse(controller);
+						}
 					} else {
 						calcScoreMov(controller, delta);
 					}
@@ -59,15 +73,29 @@ public class TrapHandler {
 			}
 		} else {  // no wall ahead
 			if(needLaneChange == true) {
-				changeLane(controller, delta);
-				needLaneChange = false;
+				if(canChangeLane()) {
+					changeLane(controller, delta);
+					needLaneChange = false;
+				} else {
+					movReverse(controller);
+				}
 			} else {
 				calcScoreMov(controller, delta);
 			}
 		}
 	}
 	
+	private boolean canChangeLane() {
+		// check if can change lane
+		
+		// check turn turning left
+		
+		// check turning right
+		return false;
+	}
+	
 	private void changeLane(CarController controller, float delta) {
+		// 
 	}
 	
 	
@@ -84,10 +112,15 @@ public class TrapHandler {
 		case WEST:
 			return currentView.get(new Coordinate(currentPosition.x-numAhead, currentPosition.y));
 		}
-		return null;  // will never return true
+		return null;  // will never return null
 	}
 	
 	private void calcScoreMov(CarController controller, float delta) {
+		// calculate score to take a movement
+		
+		// check change lane score
+		
+		// check staying on current lane score
 		
 	}
 	
