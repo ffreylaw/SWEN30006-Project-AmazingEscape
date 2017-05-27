@@ -40,9 +40,9 @@ public class MyAIController extends CarController {
 	@Override
 	public void update(float delta) {
 		checkDirectionChange();
-//		if(!isTurningLeft && !isTurningRight) {
-//			updateState();
-//		}
+		if(!isTurningLeft && !isTurningRight && !trapHandler.getChangingLane()) {
+			updateState();
+		}
 		
 		Coordinate currentPosition = new Coordinate(getPosition());
 		

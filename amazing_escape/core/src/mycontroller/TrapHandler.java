@@ -10,11 +10,15 @@ import utilities.Coordinate;
 
 public class TrapHandler {
 
-	boolean needLaneChange;
+	private boolean needLaneChange;
 	
-	LaneChanger changer;
+	private LaneChanger changer;
 
-	boolean changingLane;  // for lane change
+	private boolean changingLane;  // for lane change
+	
+	public boolean getChangingLane() {
+		return changingLane;
+	}
 
 	public TrapHandler() {
 		needLaneChange = false;
@@ -133,6 +137,8 @@ public class TrapHandler {
 				bestLaneScore = score;
 			}
 		}
+		
+		System.out.println("bestLaneNum = " + bestLaneNum);
 
 		// move to best lane
 		if(bestLaneNum == 0) {  // stay at current lane

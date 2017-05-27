@@ -96,7 +96,7 @@ public class LaneChanger {
 		
 		public void changeLane(MyAIController controller, float delta, TrapHandler handler) {
 			// find best lane
-			int bestLaneNum = 0;
+			int bestLaneNum = -1;
 			int bestLaneScore = CalculateScore.calcLaneScore(controller, -1, handler);  // the lower the better
 			for(int i=-3; i<=3; i++) {
 				if(i==0) {  // skip current lane
