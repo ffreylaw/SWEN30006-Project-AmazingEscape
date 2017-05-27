@@ -6,12 +6,6 @@ import world.Car;
 
 public class MudTrap extends TrapTile {
 	
-	private static final String layerName = "Mud";
-	
-	MudTrap() {
-		super(layerName);
-	}
-	
 	private float SLOWDOWN_FACTOR = 0.6f;
 	public void applyTo(Car car, float delta) {
 		Vector2 currentSpeed = car.getRawVelocity();
