@@ -139,6 +139,7 @@ public class TrapHandler {
 		}
 		
 		System.out.println("bestLaneNum = " + bestLaneNum);
+		System.out.println("bestLaneScore = " + bestLaneScore);
 
 		// move to best lane
 		if(bestLaneNum == 0) {  // stay at current lane
