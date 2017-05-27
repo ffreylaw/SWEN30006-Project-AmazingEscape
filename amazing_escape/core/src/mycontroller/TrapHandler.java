@@ -2,7 +2,6 @@ package mycontroller;
 
 import java.util.HashMap;
 
-import controller.CarController;
 import tiles.GrassTrap;
 import tiles.LavaTrap;
 import tiles.MapTile;
@@ -28,7 +27,7 @@ public class TrapHandler {
 		changingLane = changing;
 	}
 
-	public void handle(CarController controller, float delta) {
+	public void handle(MyAIController controller, float delta) {
 		if(changingLane) {
 			changer.doLaneChange(controller, delta, this);
 			return;
@@ -107,7 +106,7 @@ public class TrapHandler {
 	}
 
 
-	public MapTile getTileAt(int numAhead, int numRight, CarController controller, String pos) {
+	public MapTile getTileAt(int numAhead, int numRight, MyAIController controller, String pos) {
 		HashMap<Coordinate,MapTile> currentView = controller.getView();
 		Coordinate currentPosition = new Coordinate(pos);
 		switch(controller.getOrientation()) {
@@ -123,7 +122,7 @@ public class TrapHandler {
 		return null;  // will never return null
 	}
 
-	private void calcScoreMov(CarController controller, float delta) {
+	private void calcScoreMov(MyAIController controller, float delta) {
 		// find best lane
 		int bestLaneNum = 0;
 		int bestLaneScore = CalculateScore.calcLaneScore(controller, 0, this);;  // the lower the better
@@ -157,7 +156,7 @@ public class TrapHandler {
 		return tile.getName();
 	}
 
-	public void movForward(CarController controller) {
+	public void movForward(MyAIController controller) {
 		if(controller.isReversing()) {
 			controller.applyBrake();
 		} else {
@@ -167,7 +166,7 @@ public class TrapHandler {
 		}
 	}
 
-	private void movReverse(CarController controller) {
+	private void movReverse(MyAIController controller) {
 		if(controller.isReversing()) {
 			if(controller.getVelocity() < 1) {
 				controller.applyReverseAcceleration();

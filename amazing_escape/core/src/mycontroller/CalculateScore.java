@@ -1,7 +1,6 @@
 package mycontroller;
 
 
-import controller.CarController;
 import tiles.MapTile;
 
 public class CalculateScore {
@@ -11,12 +10,12 @@ public class CalculateScore {
 	public static final int WALL_SCORE = 10000;  // high score for wall
 
 	/* Get the lane score (score on that lane + score of getting to that lane)*/
-	public static int calcLaneScore(CarController controller, int laneNum, TrapHandler handler) {
+	public static int calcLaneScore(MyAIController controller, int laneNum, TrapHandler handler) {
 		return getLaneScore(controller, handler, laneNum) + getRouteScore(controller, laneNum, handler);
 	}
 
 	/* Get the sum of score of each tile on that lane */
-	private static int getLaneScore(CarController controller, TrapHandler handler, int laneNum) {
+	private static int getLaneScore(MyAIController controller, TrapHandler handler, int laneNum) {
 		int score = 0;
 		
 		// score on that lane
@@ -28,7 +27,7 @@ public class CalculateScore {
 	}
 	
 	/* Get the score of getting to that lane, return 0 if laneNum == 0 */
-	private static int getRouteScore(CarController controller, int laneNum, TrapHandler handler) {
+	private static int getRouteScore(MyAIController controller, int laneNum, TrapHandler handler) {
 		int score = 0;
 		if(laneNum < 0) {  // left
 			for(int i=0; i>laneNum; i--) {

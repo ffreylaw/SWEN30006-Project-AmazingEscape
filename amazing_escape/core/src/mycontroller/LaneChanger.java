@@ -2,7 +2,6 @@ package mycontroller;
 
 import java.util.HashMap;
 
-import controller.CarController;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial;
@@ -20,13 +19,13 @@ public class LaneChanger {
 		Direction carOri;  // car direction before changing lane, target direction of the second turn
 		Direction firstTurnTargetDir;  // target direction of the first turn when changing lane
 		
-		public void readjust(CarController controller, float delta) {
-			if(((MyAIController)controller).getLastTurnDirection() != null){
+		public void readjust(MyAIController controller, float delta) {
+			if(controller.getLastTurnDirection() != null){
 				if((!turning))  // not turning
-					if(((MyAIController)controller).getLastTurnDirection().equals(WorldSpatial.RelativeDirection.RIGHT)) {
-						((MyAIController)controller).adjustRight(controller.getOrientation(), delta);
+					if(controller.getLastTurnDirection().equals(WorldSpatial.RelativeDirection.RIGHT)) {
+						controller.adjustRight(controller.getOrientation(), delta);
 					} else {
-						((MyAIController)controller).adjustLeft(controller.getOrientation(), delta);
+						controller.adjustLeft(controller.getOrientation(), delta);
 					}
 				}
 		}
@@ -61,7 +60,7 @@ public class LaneChanger {
 			return null;  // will never return null
 		}
 		
-		private void setChangeLane(CarController controller, float delta, int laneNum, TrapHandler handler) {
+		private void setChangeLane(MyAIController controller, float delta, int laneNum, TrapHandler handler) {
 			readjust(controller, delta);
 			
 			// set last tile
@@ -83,7 +82,7 @@ public class LaneChanger {
 			}	
 		}
 		
-		public boolean canChangeLane(CarController controller, TrapHandler handler) {
+		public boolean canChangeLane(MyAIController controller, TrapHandler handler) {
 			// check if can change lane
 			for(int i=-3; i<=3; i++) {
 				if(i==0) {  // skip current lane
@@ -97,7 +96,7 @@ public class LaneChanger {
 			return false;
 		}
 		
-		public void changeLane(CarController controller, float delta, TrapHandler handler) {
+		public void changeLane(MyAIController controller, float delta, TrapHandler handler) {
 			// find best lane
 			int bestLaneNum = 0;
 			int bestLaneScore = 1000;  // the lower the better
@@ -115,7 +114,7 @@ public class LaneChanger {
 			setChangeLane(controller, delta, bestLaneNum, handler);
 		}
 		
-		public void doLaneChange(CarController controller, float delta, TrapHandler handler) {
+		public void doLaneChange(MyAIController controller, float delta, TrapHandler handler) {
 			if(controller.getVelocity() < 1) {
 				handler.movForward(controller);
 				return;
@@ -130,16 +129,15 @@ public class LaneChanger {
 					}
 				} else {
 					turning = false;  // finish first turning
-					// adjust dir
 					if(firstTurnDir.equals(RelativeDirection.LEFT)) {
-						((MyAIController)controller).adjustLeft(firstTurnTargetDir, delta);
+						controller.adjustLeft(firstTurnTargetDir, delta);
 					} else {  // right
-						((MyAIController)controller).adjustRight(firstTurnTargetDir, delta);
+						controller.adjustRight(firstTurnTargetDir, delta);
 					}
 				}
 			} else if(turning && turnNum == 2) {
 				if(!controller.getOrientation().equals(carOri)) {
-					if(((MyAIController)controller).getLastTurnDirection().equals(RelativeDirection.LEFT)) {
+					if(controller.getLastTurnDirection().equals(RelativeDirection.LEFT)) {
 						controller.turnRight(delta);
 					} else {
 						controller.turnLeft(delta);
