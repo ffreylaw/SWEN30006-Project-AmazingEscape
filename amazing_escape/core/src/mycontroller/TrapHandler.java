@@ -14,8 +14,7 @@ public class TrapHandler {
 	
 	LaneChanger changer;
 
-	// for lane change
-	boolean changingLane;
+	boolean changingLane;  // for lane change
 
 	public TrapHandler() {
 		needLaneChange = false;
@@ -106,7 +105,6 @@ public class TrapHandler {
 		}
 	}
 
-
 	public MapTile getTileAt(int numAhead, int numRight, MyAIController controller, String pos) {
 		HashMap<Coordinate,MapTile> currentView = controller.getView();
 		Coordinate currentPosition = new Coordinate(pos);
@@ -114,9 +112,9 @@ public class TrapHandler {
 		case EAST:
 			return currentView.get(new Coordinate(currentPosition.x+numAhead, currentPosition.y+numRight));
 		case NORTH:
-			return currentView.get(new Coordinate(currentPosition.x+numRight, currentPosition.y-numAhead));
+			return currentView.get(new Coordinate(currentPosition.x+numRight, currentPosition.y+numAhead));
 		case SOUTH:
-			return currentView.get(new Coordinate(currentPosition.x-numRight, currentPosition.y+numAhead));
+			return currentView.get(new Coordinate(currentPosition.x-numRight, currentPosition.y-numAhead));
 		case WEST:
 			return currentView.get(new Coordinate(currentPosition.x-numAhead, currentPosition.y-numRight));
 		}
@@ -140,7 +138,6 @@ public class TrapHandler {
 		if(bestLaneNum == 0) {  // stay at current lane
 			movForward(controller);
 		} else {  // best lane
-
 			changer.changeLane(controller, delta, this);
 		}
 	}
@@ -162,7 +159,7 @@ public class TrapHandler {
 		if(controller.isReversing()) {
 			controller.applyBrake();
 		} else {
-			if(controller.getVelocity() < 2.9) {
+			if(controller.getVelocity() < 1.5) {
 				controller.applyForwardAcceleration();
 			}
 		}

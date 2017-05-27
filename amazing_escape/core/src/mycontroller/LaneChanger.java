@@ -9,13 +9,12 @@ import world.WorldSpatial.Direction;
 import world.WorldSpatial.RelativeDirection;
 
 public class LaneChanger {
-		RelativeDirection firstTurnDir;
-		
-		MapTile turningTile;  // turning point of the second turn during change of lane
-		int turnNum;  // either 1 or 2
-		boolean turning;  // turning first time during change of lane
-		Direction carOri;  // car direction before changing lane, target direction of the second turn
-		Direction firstTurnTargetDir;  // target direction of the first turn when changing lane
+		private RelativeDirection firstTurnDir;
+		private MapTile turningTile;  // turning point of the second turn during change of lane
+		private int turnNum;  // either 1 or 2
+		private boolean turning;  // turning first time during change of lane
+		private Direction carOri;  // car direction before changing lane, target direction of the second turn
+		private Direction firstTurnTargetDir;  // target direction of the first turn when changing lane
 		
 		public void readjust(MyAIController controller, float delta) {
 			if(controller.getLastTurnDirection() != null){
@@ -59,6 +58,8 @@ public class LaneChanger {
 		}
 		
 		public void setChangeLane(MyAIController controller, float delta, int laneNum, TrapHandler handler) {
+			System.out.println("set target lane num = " + laneNum);
+			System.out.println("orientation: " + controller.getOrientation());
 			readjust(controller, delta);
 			
 			// set last tile
@@ -101,7 +102,9 @@ public class LaneChanger {
 				if(i==0) {  // skip current lane
 					continue;
 				}
+				System.out.println("currentPos = " + controller.getPosition());
 				int score = CalculateScore.calcLaneScore(controller, i, handler);
+				System.out.println("lane " + i + " Score = " + score);
 				if(score < bestLaneScore) {
 					bestLaneNum = i;
 					bestLaneScore = score;
