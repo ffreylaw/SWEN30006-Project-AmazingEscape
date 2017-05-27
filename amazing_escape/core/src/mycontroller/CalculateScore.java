@@ -10,8 +10,9 @@ public class CalculateScore {
 	public static final int MUD_SCORE = 1;
 	public static final int GRASS_SCORE = 2;
 	public static final int LAVA_SCORE = 3;
+	public static final int WALL_SCORE = 1000;
 	
-	int calcLaneScore(CarController controller, int laneNum, TrapHandler handler) {  // return 1000 if cannot reach there
+	int calcLaneScore(CarController controller, int laneNum, TrapHandler handler) {
 		HashMap<Coordinate, MapTile> currentView = controller.getView();
 		int score = 0;
 		
@@ -25,8 +26,11 @@ public class CalculateScore {
 					case "Lava":
 						score += LAVA_SCORE;
 						break;
-					case "MUD":
+					case "Mud":
 						score += MUD_SCORE;
+						break;
+					case "Wall":
+						score += WALL_SCORE;
 						break;
 				}
 			}
@@ -54,8 +58,11 @@ public class CalculateScore {
 					case "Lava":
 						score += LAVA_SCORE;
 						break;
-					case "MUD":
+					case "Mud":
 						score += MUD_SCORE;
+						break;
+					case "Wall":
+						score += WALL_SCORE;
 						break;
 				}
 			}
