@@ -36,7 +36,7 @@ public class ThreePointTurn implements DeadEndAction {
 				applyThirdPoint(controller, delta);
 			} else {
 				point = 1;
-				controller.setState(MyAIController.State.FOLLOWING_WALL);
+				controller.changeState(MyAIController.State.FOLLOWING_WALL);
 			}
 			break;
 		}

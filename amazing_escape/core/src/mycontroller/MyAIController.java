@@ -34,13 +34,15 @@ public class MyAIController extends CarController {
 		super(car);
 		this.deadEndHandler = new DeadEndHandler();
 		this.trapHandler = new TrapHandler();
-		this.state = State.DEAD_END;
+		this.state = State.NONE;
 	}
 
 	@Override
 	public void update(float delta) {
 //		checkDirectionChange();
 //		updateState();
+		
+		
 		
 		Coordinate currentPosition = new Coordinate(getPosition());
 		
@@ -119,7 +121,102 @@ public class MyAIController extends CarController {
 	}
 	
 	private boolean checkDeadEnd() {
-		return false;
+		HashMap<Coordinate, MapTile> currentView = getView();
+		Coordinate currentPosition = new Coordinate(getPosition());
+		boolean flag = false;
+		switch (getOrientation()) {
+		case EAST:
+			for (int j = -1; j >= -3; j--) {  // south walls
+				if (flag) {
+					break;
+				}
+				int count = 0;
+				boolean isWallAhead = false;
+				for (int i = 0; i <= 3; i++) {  // east walls
+					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
+					if(tile.getName().equals("Wall")) {
+						count++;
+					}
+					tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
+					if (tile.getName().equals("Wall")) {
+						isWallAhead = true;
+					}
+				}
+				if ((count == 4) && isWallAhead && checkNorth(currentView)) {
+					flag = true;
+				}
+			}
+			break;
+		case NORTH:
+			for (int i = 1; i <= 3; i++) {  // east walls
+				if (flag) {
+					break;
+				}
+				int count = 0;
+				boolean isWallAhead = false;
+				for (int j = 0; j <= 3; j++) {  // north walls
+					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
+					if(tile.getName().equals("Wall")) {
+						count++;
+					}
+					tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+j));
+					if (tile.getName().equals("Wall")) {
+						isWallAhead = true;
+					}
+				}
+				if ((count == 4) && isWallAhead && checkWest(currentView)) {
+					flag = true;
+				}
+			}
+			break;
+		case SOUTH:
+			for (int i = -3; i <= -1; i++) {  // west walls
+				if (flag) {
+					break;
+				}
+				int count = 0;
+				boolean isWallAhead = false;
+				for (int j = 0; j >= -3; j--) {  // south walls
+					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
+					if(tile.getName().equals("Wall")) {
+						count++;
+					}
+					tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+j));
+					if (tile.getName().equals("Wall")) {
+						isWallAhead = true;
+					}
+				}
+				if ((count == 4) && isWallAhead && checkEast(currentView)) {
+					flag = true;
+				}
+			}
+			break;
+		case WEST:
+			for (int j = 1; j <= 3; j++) {  // north walls
+				if (flag) {
+					break;
+				}
+				int count = 0;
+				boolean isWallAhead = false;
+				for (int i = 0; i >= -3; i--) {  // west walls
+					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
+					if(tile.getName().equals("Wall")) {
+						count++;
+					}
+					tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
+					if (tile.getName().equals("Wall")) {
+						isWallAhead = true;
+					}
+				}
+				System.out.println("count: " + count);
+				if ((count >= 2) && isWallAhead && checkSouth(currentView)) {
+					System.out.println("AHA?");
+					flag = true;
+				}
+			}
+			break;
+		}
+		return flag;
 	}
 	
 	public void changeState(State state) {
@@ -152,6 +249,10 @@ public class MyAIController extends CarController {
 	public void handleFollowingWall(float delta) {
 		HashMap<Coordinate, MapTile> currentView = getView();
 		checkDirectionChange();
+		
+		if (!isTurningRight && !isTurningLeft) {
+			if (checkDeadEnd()) changeState(State.DEAD_END);
+		}
 		
 		// Readjust the car if it is misaligned.
 		readjust(lastTurnDirection, delta);
@@ -470,10 +571,6 @@ public class MyAIController extends CarController {
 
 	public State getState() {
 		return state;
-	}
-
-	public void setState(State state) {
-		this.state = state;
 	}
 	
 	

@@ -2,6 +2,7 @@ package mycontroller;
 
 import java.util.HashMap;
 
+import mycontroller.MyAIController.State;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial;
@@ -10,11 +11,21 @@ public class UTurn implements DeadEndAction {
 	
 	private WorldSpatial.Direction targetOrientation;
 	
+	private WorldSpatial.Direction previousDirection = null;
+	
 	private boolean isDone;
+	private boolean isDecelerated;
 	
 	public UTurn() {
 		targetOrientation = null;
 		isDone = false;
+		isDecelerated = false;
+	}
+	
+	public void reset() {
+		targetOrientation = null;
+		isDone = false;
+		isDecelerated = false;
 	}
 
 	@Override
@@ -22,34 +33,40 @@ public class UTurn implements DeadEndAction {
 		HashMap<Coordinate, MapTile> currentView = controller.getView();
 		WorldSpatial.Direction currentOrientation = controller.getOrientation();
 		
+		if (!isDecelerated) {
+			controller.applyReverseAcceleration();
+		}
+		if (controller.getVelocity() <= 0.1) {
+			isDecelerated = true;
+		}
 		if (isDone) {
-			controller.applyBrake();
-		} else {
-			if (controller.getVelocity() < 1) {
+			controller.changeState(State.NONE);
+		} else if (isDecelerated) {
+			if (controller.getVelocity() < 0.2) {
 				controller.applyForwardAcceleration();
 			} else {
 				applyUTurn(controller, delta);
-//				if (targetOrientation == null) {
-//					switch (currentOrientation) {
-//					case EAST:
-//						targetOrientation = WorldSpatial.Direction.WEST;
-//						break;
-//					case SOUTH:
-//						targetOrientation = WorldSpatial.Direction.NORTH;
-//						break;
-//					case WEST:
-//						targetOrientation = WorldSpatial.Direction.EAST;
-//						break;
-//					case NORTH:
-//						targetOrientation = WorldSpatial.Direction.SOUTH;
-//						break;
-//					}
-//				} else if (currentOrientation != targetOrientation) {
-//					applyUTurn(controller, delta);
-//				} else {
-//					targetOrientation = null;
-//					isDone = true;
-//				}
+				if (targetOrientation == null) {
+					switch (currentOrientation) {
+					case EAST:
+						targetOrientation = WorldSpatial.Direction.WEST;
+						break;
+					case SOUTH:
+						targetOrientation = WorldSpatial.Direction.NORTH;
+						break;
+					case WEST:
+						targetOrientation = WorldSpatial.Direction.EAST;
+						break;
+					case NORTH:
+						targetOrientation = WorldSpatial.Direction.SOUTH;
+						break;
+					}
+				} else if (currentOrientation != targetOrientation) {
+					applyUTurn(controller, delta);
+				} else {
+					targetOrientation = null;
+					isDone = true;
+				}
 			}
 		}
 	}
