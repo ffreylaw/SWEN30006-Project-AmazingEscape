@@ -34,13 +34,13 @@ public class MyAIController extends CarController {
 		super(car);
 		this.deadEndHandler = new DeadEndHandler();
 		this.trapHandler = new TrapHandler();
-		this.state = State.DEAD_END;
+		this.state = State.NONE;
 	}
 
 	@Override
 	public void update(float delta) {
 		checkDirectionChange();
-		updateState();
+//		updateState();
 		
 		Coordinate currentPosition = new Coordinate(getPosition());
 		
