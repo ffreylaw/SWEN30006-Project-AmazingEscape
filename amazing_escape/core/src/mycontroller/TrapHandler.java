@@ -3,7 +3,10 @@ package mycontroller;
 import java.util.HashMap;
 
 import controller.CarController;
+import tiles.GrassTrap;
+import tiles.LavaTrap;
 import tiles.MapTile;
+import tiles.MudTrap;
 import utilities.Coordinate;
 import world.WorldSpatial.Direction;
 import world.WorldSpatial.RelativeDirection;
@@ -46,11 +49,11 @@ public class TrapHandler {
 		MapTile tile2 = getTileAhead(2, controller, pos);
 		MapTile tile3  = getTileAhead(3, controller, pos);
 
-		if(tile1.getName().equals("Wall")) {  // wall in front
+		if(getTileName(tile1).equals("Wall")) {  // wall in front
 			movReverse(controller);
 			needLaneChange = true;
-		} else if(tile2.getName().equals("Wall")) {  // wall at 2 tile away
-			if(tile1.getName().equals("Grass")) {  // grass in front
+		} else if(getTileName(tile2).equals("Wall")) {  // wall at 2 tile away
+			if(getTileName(tile1).equals("Grass")) {  // grass in front
 				movReverse(controller);
 				needLaneChange = true;
 			} else {  // no grass in front
@@ -62,9 +65,9 @@ public class TrapHandler {
 					needLaneChange = true;
 				}
 			}
-		} else if(tile3.getName().equals("Wall")) {  // wall at 3 tile away
-			if(tile2.getName().equals("Grass")) {  // grass at 2 tile away
-				if(tile1.getName().equals("Grass")) {  // grass in front
+		} else if(getTileName(tile3).equals("Wall")) {  // wall at 3 tile away
+			if(getTileName(tile2).equals("Grass")) {  // grass at 2 tile away
+				if(getTileName(tile1).equals("Grass")) {  // grass in front
 					movReverse(controller);
 					needLaneChange = true;
 				} else {   // no grass in front
@@ -77,7 +80,7 @@ public class TrapHandler {
 					}
 				}
 			} else {  // no grass at two 2 tile away
-				if(tile1.getName().equals("Grass")) {  // grass in front
+				if(getTileName(tile1).equals("Grass")) {  // grass in front
 					if(needLaneChange == true) {
 						movReverse(controller);
 					} else {
@@ -98,7 +101,7 @@ public class TrapHandler {
 			}
 		} else {  // no wall ahead
 			if(needLaneChange == true) {
-				if(canChangeLane() && !tile1.getName().equals("Grass")) {  // no grass in front and can change lane
+				if(canChangeLane() && !getTileName(tile1).equals("Grass")) {  // no grass in front and can change lane
 					changeLane(controller, delta);
 					needLaneChange = false;
 				} else {
@@ -237,6 +240,19 @@ public class TrapHandler {
 		} else {  // best lane
 			changeToLane(controller, delta, bestLaneNum);
 		}
+	}
+	
+	public String getTileName(MapTile tile) {
+		if(tile.getName().equals("Trap")) {
+			if(tile instanceof GrassTrap) {
+				return "Grass";
+			} else if(tile instanceof MudTrap) {
+				return "Mud";
+			} else if(tile instanceof LavaTrap) {
+				return "Lava";
+			}
+		}
+		return tile.getName();
 	}
 
 	private void changeToLane(CarController controller, float delta, int laneNum) {

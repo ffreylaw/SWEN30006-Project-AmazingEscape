@@ -42,6 +42,7 @@ public class CalculateScore {
 		return score;
 	}
 
+	// score one that lane
 	private int getLaneScore(CarController controller, TrapHandler handler, String pos) {
 		int score = 0;
 		
@@ -50,7 +51,7 @@ public class CalculateScore {
 		// score on that lane
 		for(int i=1; i<=3; i++) {
 			MapTile tile = currentView.get(handler.getTileAhead(i, controller, pos));
-			switch(tile.getName()) {
+			switch(handler.getTileName(tile)) {
 			case "Grass":
 				score += GRASS_SCORE;
 				break;
@@ -67,4 +68,14 @@ public class CalculateScore {
 		}
 		
 		return score;
+		
 	}
+	
+	// score get to that lane
+	private int getRouteScore(CarController controller, int laneNum, TrapHandler handler) {
+		int score = 0;
+		
+		return score;
+	}
+}
+	
