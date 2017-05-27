@@ -100,6 +100,8 @@ public class LaneChanger {
 		}
 		
 		public void changeLane(MyAIController controller, float delta, TrapHandler handler) {
+			controller.applyReverseAcceleration();
+			
 			// find best lane
 			int bestLaneNum = -1;
 			int bestLaneScore = CalculateScore.calcLaneScore(controller, -1, handler);  // the lower the better
