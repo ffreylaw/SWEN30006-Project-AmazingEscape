@@ -45,9 +45,9 @@ public class TrapHandler {
 		
 		String pos = controller.getPosition();
 
-		MapTile tile1 = getTileAhead(1, controller, pos);
-		MapTile tile2 = getTileAhead(2, controller, pos);
-		MapTile tile3  = getTileAhead(3, controller, pos);
+		MapTile tile1 = getTileAt(1, 0, controller, pos);
+		MapTile tile2 = getTileAt(2, 0, controller, pos);
+		MapTile tile3  = getTileAt(3, 0, controller, pos);
 
 		if(getTileName(tile1).equals("Wall")) {  // wall in front
 			movReverse(controller);
@@ -203,18 +203,18 @@ public class TrapHandler {
 		changeToLane(controller, delta, bestLaneNum);
 	}
 
-	public MapTile getTileAhead(int numAhead, CarController controller, String pos) {
+	public MapTile getTileAt(int numAhead, int numRight, CarController controller, String pos) {
 		HashMap<Coordinate,MapTile> currentView = controller.getView();
 		Coordinate currentPosition = new Coordinate(pos);
 		switch(controller.getOrientation()) {
 		case EAST:
-			return currentView.get(new Coordinate(currentPosition.x+numAhead, currentPosition.y));
+			return currentView.get(new Coordinate(currentPosition.x+numAhead, currentPosition.y+numRight));
 		case NORTH:
-			return currentView.get(new Coordinate(currentPosition.x, currentPosition.y-numAhead));
+			return currentView.get(new Coordinate(currentPosition.x+numRight, currentPosition.y-numAhead));
 		case SOUTH:
-			return currentView.get(new Coordinate(currentPosition.x, currentPosition.y+numAhead));
+			return currentView.get(new Coordinate(currentPosition.x-numRight, currentPosition.y+numAhead));
 		case WEST:
-			return currentView.get(new Coordinate(currentPosition.x-numAhead, currentPosition.y));
+			return currentView.get(new Coordinate(currentPosition.x-numAhead, currentPosition.y-numRight));
 		}
 		return null;  // will never return null
 	}
