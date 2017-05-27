@@ -1,10 +1,8 @@
 package mycontroller;
 
-import java.util.HashMap;
 
 import controller.CarController;
 import tiles.MapTile;
-import utilities.Coordinate;
 
 public class CalculateScore {
 	public static final int MUD_SCORE = 1;
@@ -20,11 +18,10 @@ public class CalculateScore {
 	/* Get the sum of score of each tile on that lane */
 	private static int getLaneScore(CarController controller, TrapHandler handler, int laneNum) {
 		int score = 0;
-		HashMap<Coordinate, MapTile> currentView = controller.getView();
 		
 		// score on that lane
 		for(int i=1; i<=3; i++) {
-			MapTile tile = currentView.get(handler.getTileAt(i, laneNum,controller, controller.getPosition()));
+			MapTile tile = handler.getTileAt(i, laneNum,controller, controller.getPosition());
 			score += getTileScore(tile, handler);
 		}
 		return score;

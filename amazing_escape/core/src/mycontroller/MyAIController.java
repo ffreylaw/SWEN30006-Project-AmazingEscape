@@ -39,8 +39,8 @@ public class MyAIController extends CarController {
 
 	@Override
 	public void update(float delta) {
-//		checkDirectionChange();
-//		updateState();
+		checkDirectionChange();
+		updateState();
 		
 		
 		
@@ -78,7 +78,7 @@ public class MyAIController extends CarController {
 		switch (getOrientation()) {
 		case EAST:
 			for(int i=1; i<=3; i++) {  // right
-				for(int j=-3; j<=3; j++) {  // bot to top
+				for(int j=-3; j<=3; j++) {  // top to bot
 					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
 					if(tile instanceof TrapTile) {  // trap detected
 						return true;
@@ -88,7 +88,7 @@ public class MyAIController extends CarController {
 			break;
 		case NORTH:
 			for(int i=-3; i<=3; i++) {  // left to right
-				for(int j=1; j<=3; j++) {  // top
+				for(int j=-3; j<=1; j++) {  // top
 					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
 					if(tile instanceof TrapTile) {  // trap detected
 						return true;
@@ -98,7 +98,7 @@ public class MyAIController extends CarController {
 			break;
 		case SOUTH:
 			for(int i=-3; i<=3; i++) {  // left to right
-				for(int j=-3; j<=-1; j++) {  // bot
+				for(int j=1; j<=3; j++) {  // bot
 					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
 					if(tile instanceof TrapTile) {  // trap detected
 						return true;
@@ -108,7 +108,7 @@ public class MyAIController extends CarController {
 			break;
 		case WEST:
 			for(int i=-3; i<=-1; i++) {  // left
-				for(int j=-3; j<=3; j++) {  // bot to top
+				for(int j=-3; j<=3; j++) {  // top to bot
 					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
 					if(tile instanceof TrapTile) {  // trap detected
 						return true;
@@ -119,6 +119,47 @@ public class MyAIController extends CarController {
 		}
 		return false;
 	}
+	
+//	/** Check if any traps ahead */
+//	private boolean checkTrap() {
+//		HashMap<Coordinate, MapTile> currentView = getView();
+//		Coordinate currentPosition = new Coordinate(getPosition());
+//		switch (getOrientation()) {
+//		case EAST:
+//			for(int i=1; i<=3; i++) {  // right
+//				MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
+//				if(tile instanceof TrapTile) {  // trap detected
+//					return true;
+//				}
+//			}
+//			break;
+//		case NORTH:
+//			for(int j=-3; j<=-1; j++) {  // top
+//				MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+j));
+//				if(tile instanceof TrapTile) {  // trap detected
+//					return true;
+//				}
+//			}
+//			break;
+//		case SOUTH:
+//			for(int j=1; j<=3; j++) {  // bot
+//				MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+j));
+//				if(tile instanceof TrapTile) {  // trap detected
+//					return true;
+//				}
+//			}
+//			break;
+//		case WEST:
+//			for(int i=-3; i<=-1; i++) {  // left
+//				MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
+//				if(tile instanceof TrapTile) {  // trap detected
+//					return true;
+//				}
+//			}
+//			break;
+//		}
+//		return false;
+//	}
 	
 	private boolean checkDeadEnd() {
 		HashMap<Coordinate, MapTile> currentView = getView();

@@ -102,6 +102,15 @@ public class LaneChanger {
 		}
 		
 		public void doLaneChange(CarController controller, float delta, TrapHandler handler) {
+//			if(firstTurnDir.equals(RelativeDirection.LEFT)) {
+//				((MyAIController) controller).adjustLeft(firstTurnTargetDir, delta);
+//			} else {
+//				((MyAIController) controller).adjustRight(firstTurnTargetDir, delta);
+//			}
+			if(controller.getVelocity() < 1) {
+				handler.movForward(controller);
+				return;
+			}
 			if(turningFirst) {
 				if(!controller.getOrientation().equals(firstTurnTargetDir)) {
 					// apply first turn direction
@@ -121,6 +130,7 @@ public class LaneChanger {
 				}
 			} else if(turningSecond) {
 				if(!controller.getOrientation().equals(carOri)) {
+//					((MyAIController) controller).readjust(firstTurnDir, delta);
 					// apply opposite direction to last turn direction
 					if(secondTurnDir.equals(RelativeDirection.LEFT)) {
 						controller.turnLeft(delta);

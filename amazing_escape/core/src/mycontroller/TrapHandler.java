@@ -21,6 +21,7 @@ public class TrapHandler {
 	public TrapHandler() {
 		needLaneChange = false;
 		changingLane = false;
+		changer = new LaneChanger();
 	}
 	
 	public void setChangingLane(boolean changing) {
