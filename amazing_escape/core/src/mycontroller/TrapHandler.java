@@ -17,7 +17,9 @@ public class TrapHandler {
 	boolean changingLane;
 	int needChangeNum;
 	int changedLaneNum;
-	RelativeDirection lastTurnDir;
+	RelativeDirection firstTurnDir;
+	RelativeDirection secondTurnDir;
+	
 	MapTile lastTile;
 	boolean turningFirst;  // turning first time
 	boolean turningSecond;  // turning second time
@@ -109,21 +111,56 @@ public class TrapHandler {
 	private void DoLaneChange(CarController controller, float delta) {
 		if(turningFirst) {
 			if(!controller.getOrientation().equals(firstTurnTargetDir)) {
-				// continue to apply last turn direction
-				if(lastTurnDir.equals(RelativeDirection.LEFT)) {
+				// apply first turn direction
+				if(firstTurnDir.equals(RelativeDirection.LEFT)) {
 					controller.turnLeft(delta);
 				} else {  // right
 					controller.turnRight(delta);
 				}
 			} else {
-				// 
+				turningFirst = false;  // finish first turning
+				// adjust dir
+				if(firstTurnDir.equals(RelativeDirection.LEFT)) {
+					((MyAIController)controller).adjustLeft(firstTurnTargetDir, delta);
+				} else {  // right
+					((MyAIController)controller).adjustRight(firstTurnTargetDir, delta);
+				}
 			}
 		} else if(turningSecond) {
 			if(!controller.getOrientation().equals(carOri)) {
-
+				// apply opposite direction to last turn direction
+				if(secondTurnDir.equals(RelativeDirection.LEFT)) {
+					controller.turnLeft(delta);
+				} else {  // right
+					controller.turnRight(delta);
+				}
+			} else {
+				turningSecond = false;
+				changingLane = false;  // finish changing lane
+				// adjust dir
+				if(secondTurnDir.equals(RelativeDirection.LEFT)) {
+					((MyAIController)controller).adjustLeft(firstTurnTargetDir, delta);
+				} else {  // right
+					((MyAIController)controller).adjustRight(firstTurnTargetDir, delta);
+				}
 			}
 		} else {
-			// move forward, adjust orientation
+			
+			// get this tile
+			HashMap<Coordinate,MapTile> currentView = controller.getView();
+			Coordinate currentPosition = new Coordinate(controller.getPosition());
+			MapTile thisTile = currentView.get(currentPosition);
+			
+			// increment changedLane number if tile changed
+			if(!thisTile.equals(lastTile)) {  // cross a tile
+				changedLaneNum++;
+			}
+			
+			if(changedLaneNum >= needChangeNum) {
+				turningSecond = true;
+			} else {
+				movForward(controller);
+			}
 		}
 	}
 
@@ -135,6 +172,8 @@ public class TrapHandler {
 			if(i==0) {  // skip current lane
 				continue;
 			}
+			
+			
 		}
 
 		return false;
@@ -208,14 +247,48 @@ public class TrapHandler {
 		changingLane = true;
 		needChangeNum = Math.abs(laneNum);
 		changedLaneNum = 0;
-		if(laneNum < 0) {  // left
-			lastTurnDir = RelativeDirection.LEFT;
-		} else {
-			lastTurnDir = RelativeDirection.RIGHT;
-		}	
 		turningFirst = true;
 		turningSecond = false;
 		carOri = controller.getOrientation();
+		if(laneNum < 0) {  // left
+			firstTurnDir = RelativeDirection.LEFT;
+			secondTurnDir = RelativeDirection.RIGHT;
+			firstTurnTargetDir = getOri(carOri, true);
+		} else {
+			firstTurnDir = RelativeDirection.RIGHT;
+			secondTurnDir = RelativeDirection.LEFT;
+			firstTurnTargetDir = getOri(carOri, false);
+		}	
+	}
+	
+	private Direction getOri(Direction currentDir, boolean left) {  // left or right of current direction
+		switch(currentDir) {
+		case EAST:
+			if(left) {
+				return Direction.NORTH;
+			} else {
+				return Direction.SOUTH;
+			}
+		case NORTH:
+			if(left) {
+				return Direction.WEST;
+			} else {
+				return Direction.EAST;
+			}
+		case SOUTH:
+			if(left) {
+				return Direction.EAST;
+			} else {
+				return Direction.WEST;
+			}
+		case WEST:
+			if(left) {
+				return Direction.SOUTH;
+			} else {
+				return Direction.NORTH;
+			}
+		}
+		return null;  // will never return null
 	}
 
 	private void movForward(CarController controller) {
