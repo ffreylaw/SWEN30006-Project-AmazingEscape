@@ -10,8 +10,6 @@ import world.WorldSpatial.RelativeDirection;
 
 public class LaneChanger {
 		RelativeDirection firstTurnDir;
-		RelativeDirection lastTurnDir;
-		
 		
 		MapTile turningTile;  // turning point of the second turn during change of lane
 		int turnNum;  // either 1 or 2
@@ -60,7 +58,7 @@ public class LaneChanger {
 			return null;  // will never return null
 		}
 		
-		private void setChangeLane(MyAIController controller, float delta, int laneNum, TrapHandler handler) {
+		public void setChangeLane(MyAIController controller, float delta, int laneNum, TrapHandler handler) {
 			readjust(controller, delta);
 			
 			// set last tile
@@ -78,7 +76,6 @@ public class LaneChanger {
 			} else {  // turn right
 				firstTurnDir = RelativeDirection.RIGHT;
 				firstTurnTargetDir = getOri(carOri, false);
-				lastTurnDir = firstTurnDir;
 			}	
 		}
 		
@@ -99,7 +96,7 @@ public class LaneChanger {
 		public void changeLane(MyAIController controller, float delta, TrapHandler handler) {
 			// find best lane
 			int bestLaneNum = 0;
-			int bestLaneScore = 1000;  // the lower the better
+			int bestLaneScore = CalculateScore.calcLaneScore(controller, -1, handler);  // the lower the better
 			for(int i=-3; i<=3; i++) {
 				if(i==0) {  // skip current lane
 					continue;
@@ -115,6 +112,7 @@ public class LaneChanger {
 		}
 		
 		public void doLaneChange(MyAIController controller, float delta, TrapHandler handler) {
+			System.out.println("Changing lane");
 			if(controller.getVelocity() < 1) {
 				handler.movForward(controller);
 				return;

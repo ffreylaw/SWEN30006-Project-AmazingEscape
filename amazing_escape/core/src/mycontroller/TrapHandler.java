@@ -100,6 +100,7 @@ public class TrapHandler {
 					movReverse(controller);
 				}
 			} else {
+				System.out.println("calcScoreMov");
 				calcScoreMov(controller, delta);
 			}
 		}
@@ -125,7 +126,7 @@ public class TrapHandler {
 	private void calcScoreMov(MyAIController controller, float delta) {
 		// find best lane
 		int bestLaneNum = 0;
-		int bestLaneScore = CalculateScore.calcLaneScore(controller, 0, this);;  // the lower the better
+		int bestLaneScore = CalculateScore.calcLaneScore(controller, 0, this);  // the lower the better
 		
 		for(int i=-3; i<=3; i++) {
 			int score = CalculateScore.calcLaneScore(controller, i, this);
@@ -139,6 +140,7 @@ public class TrapHandler {
 		if(bestLaneNum == 0) {  // stay at current lane
 			movForward(controller);
 		} else {  // best lane
+
 			changer.changeLane(controller, delta, this);
 		}
 	}
@@ -160,7 +162,7 @@ public class TrapHandler {
 		if(controller.isReversing()) {
 			controller.applyBrake();
 		} else {
-			if(controller.getVelocity() < 1) {
+			if(controller.getVelocity() < 2.9) {
 				controller.applyForwardAcceleration();
 			}
 		}
