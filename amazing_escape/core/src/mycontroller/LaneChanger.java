@@ -5,18 +5,31 @@ import java.util.HashMap;
 import controller.CarController;
 import tiles.MapTile;
 import utilities.Coordinate;
+import world.WorldSpatial;
 import world.WorldSpatial.Direction;
 import world.WorldSpatial.RelativeDirection;
 
 public class LaneChanger {
 		RelativeDirection firstTurnDir;
-		RelativeDirection secondTurnDir;
+		RelativeDirection lastTurnDir;
+		
 		
 		MapTile turningTile;  // turning point of the second turn during change of lane
-		boolean turningFirst;  // turning first time during change of lane
-		boolean turningSecond;  // turning second time during change of lane
+		int turnNum;  // either 1 or 2
+		boolean turning;  // turning first time during change of lane
 		Direction carOri;  // car direction before changing lane, target direction of the second turn
 		Direction firstTurnTargetDir;  // target direction of the first turn when changing lane
+		
+		public void readjust(CarController controller, float delta) {
+			if(((MyAIController)controller).getLastTurnDirection() != null){
+				if((!turning))  // not turning
+					if(((MyAIController)controller).getLastTurnDirection().equals(WorldSpatial.RelativeDirection.RIGHT)) {
+						((MyAIController)controller).adjustRight(controller.getOrientation(), delta);
+					} else {
+						((MyAIController)controller).adjustLeft(controller.getOrientation(), delta);
+					}
+				}
+		}
 		
 		private Direction getOri(Direction currentDir, boolean left) {  // left or right of current direction
 			switch(currentDir) {
@@ -49,23 +62,24 @@ public class LaneChanger {
 		}
 		
 		private void setChangeLane(CarController controller, float delta, int laneNum, TrapHandler handler) {
+			readjust(controller, delta);
+			
 			// set last tile
 			turningTile = handler.getTileAt(1, laneNum, controller, controller.getPosition());
 			
 			// set other variables for changing lane
 			handler.setChangingLane(true);
-			turningFirst = true;
-			turningSecond = false;
+			turning = true;
+			turnNum = 1;
 			carOri = controller.getOrientation();
 			
 			if(laneNum < 0) {  // turn left
 				firstTurnDir = RelativeDirection.LEFT;
-				secondTurnDir = RelativeDirection.RIGHT;
 				firstTurnTargetDir = getOri(carOri, true);
 			} else {  // turn right
 				firstTurnDir = RelativeDirection.RIGHT;
-				secondTurnDir = RelativeDirection.LEFT;
 				firstTurnTargetDir = getOri(carOri, false);
+				lastTurnDir = firstTurnDir;
 			}	
 		}
 		
@@ -102,16 +116,11 @@ public class LaneChanger {
 		}
 		
 		public void doLaneChange(CarController controller, float delta, TrapHandler handler) {
-//			if(firstTurnDir.equals(RelativeDirection.LEFT)) {
-//				((MyAIController) controller).adjustLeft(firstTurnTargetDir, delta);
-//			} else {
-//				((MyAIController) controller).adjustRight(firstTurnTargetDir, delta);
-//			}
 			if(controller.getVelocity() < 1) {
 				handler.movForward(controller);
 				return;
 			}
-			if(turningFirst) {
+			if(turning && turnNum == 1) {
 				if(!controller.getOrientation().equals(firstTurnTargetDir)) {
 					// apply first turn direction
 					if(firstTurnDir.equals(RelativeDirection.LEFT)) {
@@ -120,7 +129,7 @@ public class LaneChanger {
 						controller.turnRight(delta);
 					}
 				} else {
-					turningFirst = false;  // finish first turning
+					turning = false;  // finish first turning
 					// adjust dir
 					if(firstTurnDir.equals(RelativeDirection.LEFT)) {
 						((MyAIController)controller).adjustLeft(firstTurnTargetDir, delta);
@@ -128,25 +137,16 @@ public class LaneChanger {
 						((MyAIController)controller).adjustRight(firstTurnTargetDir, delta);
 					}
 				}
-			} else if(turningSecond) {
+			} else if(turning && turnNum == 2) {
 				if(!controller.getOrientation().equals(carOri)) {
-//					((MyAIController) controller).readjust(firstTurnDir, delta);
-					// apply opposite direction to last turn direction
-					if(secondTurnDir.equals(RelativeDirection.LEFT)) {
-						controller.turnLeft(delta);
-					} else {  // right
+					if(((MyAIController)controller).getLastTurnDirection().equals(RelativeDirection.LEFT)) {
 						controller.turnRight(delta);
+					} else {
+						controller.turnLeft(delta);
 					}
 				} else {
-					turningSecond = false;
-					
+					turning = false;
 					handler.setChangingLane(false);  // finish changing lane
-					// adjust dir
-					if(secondTurnDir.equals(RelativeDirection.LEFT)) {
-						((MyAIController)controller).adjustLeft(firstTurnTargetDir, delta);
-					} else {  // right
-						((MyAIController)controller).adjustRight(firstTurnTargetDir, delta);
-					}
 				}
 			} else {  // not turning
 				// get this tile
@@ -158,7 +158,8 @@ public class LaneChanger {
 				if(!thisTile.equals(turningTile)) {  // cross a tile
 					handler.movForward(controller);
 				} else {
-					turningSecond = true;
+					turning = true;
+					turnNum = 2;
 				}
 			}
 		}

@@ -34,6 +34,8 @@ public class TrapHandler {
 			return;
 		}
 		
+		changer.readjust(controller, delta);
+		
 		String pos = controller.getPosition();
 
 		MapTile tile1 = getTileAt(1, 0, controller, pos);
@@ -124,11 +126,9 @@ public class TrapHandler {
 	private void calcScoreMov(CarController controller, float delta) {
 		// find best lane
 		int bestLaneNum = 0;
-		int bestLaneScore = 1000;  // the lower the better
+		int bestLaneScore = CalculateScore.calcLaneScore(controller, 0, this);;  // the lower the better
+		
 		for(int i=-3; i<=3; i++) {
-			if(i==0) {  // skip current lane
-				continue;
-			}
 			int score = CalculateScore.calcLaneScore(controller, i, this);
 			if(score < bestLaneScore) {
 				bestLaneNum = i;
@@ -161,13 +161,17 @@ public class TrapHandler {
 		if(controller.isReversing()) {
 			controller.applyBrake();
 		} else {
-			controller.applyForwardAcceleration();
+			if(controller.getVelocity() < 1) {
+				controller.applyForwardAcceleration();
+			}
 		}
 	}
 
 	private void movReverse(CarController controller) {
 		if(controller.isReversing()) {
-			controller.applyReverseAcceleration();
+			if(controller.getVelocity() < 1) {
+				controller.applyReverseAcceleration();
+			}
 		} else {
 			controller.applyBrake();
 		}
