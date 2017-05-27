@@ -10,8 +10,11 @@ public class TrapHandler {
 	
 	boolean needLaneChange;
 	
+	CalculateScore calculator;
+	
 	
 	public TrapHandler() {
+		calculator = new CalculateScore();
 		needLaneChange = false;
 	}
 	
@@ -140,8 +143,37 @@ public class TrapHandler {
 		return false;
 	}
 	
+//	private boolean canChangeLane(CarController controller) {
+//		// check if can change lane
+//		MapTile tile1 = getTileAhead(1, controller);
+//		if(tile1.getName().equals("Grass")) {  // grass ahead cannot turn
+//			return false;
+//		}
+//		
+//		// check turn turning left
+//		
+//		// check turning right
+//		
+//		return false;
+//	}
+	
 	private void changeLane(CarController controller, float delta) {
-		// 
+		
+		// find best lane
+		int bestLaneNum = 0;
+		int bestLaneScore = 1000;  // the lower the better
+		for(int i=-3; i<=3; i++) {
+			if(i==0) {  // skip current lane
+				continue;
+			}
+			int score = calculator.calcLaneScore(controller, i);
+			if(score < bestLaneScore) {
+				bestLaneNum = i;
+				bestLaneScore = score;
+			}
+		}
+		
+		// move to best lane
 	}
 	
 	
@@ -162,11 +194,26 @@ public class TrapHandler {
 	}
 	
 	private void calcScoreMov(CarController controller, float delta) {
-		// calculate score to take a movement
+		// find best lane
+		int bestLaneNum = 0;
+		int bestLaneScore = 1000;  // the lower the better
+		for(int i=-3; i<=3; i++) {
+			if(i==0) {  // skip current lane
+				continue;
+			}
+			int score = calculator.calcLaneScore(controller, i);
+			if(score < bestLaneScore) {
+				bestLaneNum = i;
+				bestLaneScore = score;
+			}
+		}
 		
-		// check change lane score
-		
-		// check staying on current lane score
+		// move to best lane
+		if(bestLaneNum == 0) {  // stay at the lane
+			movForward(controller);
+		} else {  // best lane
+			
+		}
 		
 	}
 	

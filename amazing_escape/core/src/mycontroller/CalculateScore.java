@@ -11,9 +11,13 @@ public class CalculateScore {
 	public static final int GRASS_SCORE = 2;
 	public static final int LAVA_SCORE = 3;
 	
-	int calcLaneScore(CarController controller, int laneNum) {
+	int calcLaneScore(CarController controller, int laneNum) {  // return 1000 if cannot reach there
 		HashMap<Coordinate, MapTile> currentView = controller.getView();
 		// calculate score on that lane or to change to that lane
+		
+		// lane num < 0 left, > 0 right, = 0 current lane
+		
+		
 		return 0;
 	}
 }
