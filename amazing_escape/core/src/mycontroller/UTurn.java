@@ -1,17 +1,11 @@
 package mycontroller;
 
-import java.util.HashMap;
-
 import mycontroller.MyAIController.State;
-import tiles.MapTile;
-import utilities.Coordinate;
 import world.WorldSpatial;
 
 public class UTurn implements DeadEndAction {
 	
 	private WorldSpatial.Direction targetOrientation;
-	
-	private WorldSpatial.Direction previousDirection = null;
 	
 	private boolean isDone;
 	private boolean isDecelerated;
@@ -30,7 +24,6 @@ public class UTurn implements DeadEndAction {
 
 	@Override
 	public void action(MyAIController controller, float delta) {
-		HashMap<Coordinate, MapTile> currentView = controller.getView();
 		WorldSpatial.Direction currentOrientation = controller.getOrientation();
 		
 		if (!isDecelerated) {

@@ -14,8 +14,8 @@ public class ReverseOut implements DeadEndAction {
 	
 	private WorldSpatial.Direction previousDirection = null;
 	
-	private boolean flag = false;
-	private boolean flag2 = false;
+//	private boolean flag = false;
+//	private boolean flag2 = false;
 	
 	public ReverseOut() {
 		isReverseTurningLeft = false;

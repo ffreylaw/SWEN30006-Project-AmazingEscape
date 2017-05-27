@@ -34,15 +34,13 @@ public class MyAIController extends CarController {
 		super(car);
 		this.deadEndHandler = new DeadEndHandler();
 		this.trapHandler = new TrapHandler();
-		this.state = State.NONE;
+		this.state = State.DEAD_END;
 	}
 
 	@Override
 	public void update(float delta) {
 //		checkDirectionChange();
 //		updateState();
-		
-		
 		
 		Coordinate currentPosition = new Coordinate(getPosition());
 		
@@ -255,12 +253,14 @@ public class MyAIController extends CarController {
 		}
 		// Turn towards the north
 		if (!getOrientation().equals(WorldSpatial.Direction.NORTH)) {
+			System.out.println("1");
 			lastTurnDirection = WorldSpatial.RelativeDirection.LEFT;
 			applyLeftTurn(getOrientation(), delta);
 		}
 		if (checkNorth(currentView)){
 			// Turn right until we go back to east!
 			if (!getOrientation().equals(WorldSpatial.Direction.EAST)) {
+				System.out.println("2");
 				lastTurnDirection = WorldSpatial.RelativeDirection.RIGHT;
 				applyRightTurn(getOrientation(), delta);
 			} else {
