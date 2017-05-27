@@ -19,7 +19,7 @@ public class TrapHandler {
 	int changedLaneNum;
 	RelativeDirection firstTurnDir;
 	RelativeDirection secondTurnDir;
-	
+
 	MapTile lastTile;
 	boolean turningFirst;  // turning first time
 	boolean turningSecond;  // turning second time
@@ -39,39 +39,41 @@ public class TrapHandler {
 			DoLaneChange(controller, delta);
 			return;
 		}
+		
+		String pos = controller.getPosition();
 
-		MapTile tile1 = getTileAhead(1, controller);
-		MapTile tile2 = getTileAhead(2, controller);
-		MapTile tile3  = getTileAhead(3, controller);
+		MapTile tile1 = getTileAhead(1, controller, pos);
+		MapTile tile2 = getTileAhead(2, controller, pos);
+		MapTile tile3  = getTileAhead(3, controller, pos);
 
 		if(tile1.getName().equals("Wall")) {  // wall in front
 			movReverse(controller);
 			needLaneChange = true;
 		} else if(tile2.getName().equals("Wall")) {  // wall at 2 tile away
 			if(tile1.getName().equals("Grass")) {  // grass in front
-				//				movReverse(controller);
-				//				needLaneChange = true;
+				movReverse(controller);
+				needLaneChange = true;
 			} else {  // no grass in front
 				if(canChangeLane()) {
 					changeLane(controller, delta);
 					needLaneChange = false;
 				} else {
-					//					movReverse(controller);
-					//					needLaneChange = true;
+					movReverse(controller);
+					needLaneChange = true;
 				}
 			}
 		} else if(tile3.getName().equals("Wall")) {  // wall at 3 tile away
 			if(tile2.getName().equals("Grass")) {  // grass at 2 tile away
 				if(tile1.getName().equals("Grass")) {  // grass in front
-					//					movReverse(controller);
-					//					needLaneChange = true;
+					movReverse(controller);
+					needLaneChange = true;
 				} else {   // no grass in front
 					if(canChangeLane()) {
 						changeLane(controller, delta);
 						needLaneChange = false;
 					} else {
-						//						movReverse(controller);
-						//						needLaneChange = true;
+						movReverse(controller);
+						needLaneChange = true;
 					}
 				}
 			} else {  // no grass at two 2 tile away
@@ -145,17 +147,17 @@ public class TrapHandler {
 				}
 			}
 		} else {
-			
+
 			// get this tile
 			HashMap<Coordinate,MapTile> currentView = controller.getView();
 			Coordinate currentPosition = new Coordinate(controller.getPosition());
 			MapTile thisTile = currentView.get(currentPosition);
-			
+
 			// increment changedLane number if tile changed
 			if(!thisTile.equals(lastTile)) {  // cross a tile
 				changedLaneNum++;
 			}
-			
+
 			if(changedLaneNum >= needChangeNum) {
 				turningSecond = true;
 			} else {
@@ -172,8 +174,8 @@ public class TrapHandler {
 			if(i==0) {  // skip current lane
 				continue;
 			}
-			
-			
+
+
 		}
 
 		return false;
@@ -188,7 +190,7 @@ public class TrapHandler {
 			if(i==0) {  // skip current lane
 				continue;
 			}
-			int score = calculator.calcLaneScore(controller, i);
+			int score = calculator.calcLaneScore(controller, i, this);
 			if(score < bestLaneScore) {
 				bestLaneNum = i;
 				bestLaneScore = score;
@@ -198,9 +200,9 @@ public class TrapHandler {
 		changeToLane(controller, delta, bestLaneNum);
 	}
 
-	private MapTile getTileAhead(int numAhead, CarController controller) {
+	public MapTile getTileAhead(int numAhead, CarController controller, String pos) {
 		HashMap<Coordinate,MapTile> currentView = controller.getView();
-		Coordinate currentPosition = new Coordinate(controller.getPosition());
+		Coordinate currentPosition = new Coordinate(pos);
 		switch(controller.getOrientation()) {
 		case EAST:
 			return currentView.get(new Coordinate(currentPosition.x+numAhead, currentPosition.y));
@@ -222,7 +224,7 @@ public class TrapHandler {
 			if(i==0) {  // skip current lane
 				continue;
 			}
-			int score = calculator.calcLaneScore(controller, i);
+			int score = calculator.calcLaneScore(controller, i, this);
 			if(score < bestLaneScore) {
 				bestLaneNum = i;
 				bestLaneScore = score;
@@ -260,7 +262,7 @@ public class TrapHandler {
 			firstTurnTargetDir = getOri(carOri, false);
 		}	
 	}
-	
+
 	private Direction getOri(Direction currentDir, boolean left) {  // left or right of current direction
 		switch(currentDir) {
 		case EAST:
