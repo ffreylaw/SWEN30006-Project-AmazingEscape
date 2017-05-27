@@ -11,7 +11,8 @@ public class CalculateScore {
 
 	/* Get the lane score (score on that lane + score of getting to that lane)*/
 	public static int calcLaneScore(MyAIController controller, int laneNum, TrapHandler handler) {
-		return getLaneScore(controller, handler, laneNum) + getRouteScore(controller, laneNum, handler);
+		int score = getLaneScore(controller, handler, laneNum) + getRouteScore(controller, laneNum, handler);
+		return score;
 	}
 
 	/* Get the sum of score of each tile on that lane */

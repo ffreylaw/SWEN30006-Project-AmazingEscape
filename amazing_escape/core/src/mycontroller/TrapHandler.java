@@ -114,13 +114,13 @@ public class TrapHandler {
 		Coordinate currentPosition = new Coordinate(pos);
 		switch(controller.getOrientation()) {
 		case EAST:
-			return currentView.get(new Coordinate(currentPosition.x+numAhead, currentPosition.y+numRight));
+			return currentView.get(new Coordinate(currentPosition.x+numAhead, currentPosition.y-numRight));
 		case NORTH:
 			return currentView.get(new Coordinate(currentPosition.x+numRight, currentPosition.y+numAhead));
 		case SOUTH:
 			return currentView.get(new Coordinate(currentPosition.x-numRight, currentPosition.y-numAhead));
 		case WEST:
-			return currentView.get(new Coordinate(currentPosition.x-numAhead, currentPosition.y-numRight));
+			return currentView.get(new Coordinate(currentPosition.x-numAhead, currentPosition.y+numRight));
 		}
 		return null;  // will never return null
 	}
@@ -129,6 +129,8 @@ public class TrapHandler {
 		// find best lane
 		int bestLaneNum = 0;
 		int bestLaneScore = CalculateScore.calcLaneScore(controller, 0, this);  // the lower the better
+		
+		System.out.println("line 0 score: " + bestLaneScore);
 		
 		for(int i=-3; i<=3; i++) {
 			int score = CalculateScore.calcLaneScore(controller, i, this);
@@ -166,7 +168,7 @@ public class TrapHandler {
 		if(controller.isReversing()) {
 			controller.applyBrake();
 		} else {
-			if(controller.getVelocity() < 1.5) {
+			if(controller.getVelocity() < 0.8) {
 				controller.applyForwardAcceleration();
 			}
 		}

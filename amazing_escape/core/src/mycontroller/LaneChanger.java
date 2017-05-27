@@ -65,6 +65,11 @@ public class LaneChanger {
 			// set last tile
 			turningTile = handler.getTileAt(1, laneNum, controller, controller.getPosition());
 			
+			HashMap<Coordinate,MapTile> currentView = controller.getView();
+			Coordinate currentPosition = new Coordinate(controller.getPosition());
+			
+			System.out.println("turning tile at " + (currentPosition.x+1) + ", " + (currentPosition.y - laneNum));
+			
 			// set other variables for changing lane
 			handler.setChangingLane(true);
 			turning = true;
@@ -116,11 +121,13 @@ public class LaneChanger {
 		
 		public void doLaneChange(MyAIController controller, float delta, TrapHandler handler) {
 			System.out.println("Changing lane");
+			System.out.println(controller.getOrientation());
 			if(controller.getVelocity() < 1) {
 				handler.movForward(controller);
 				return;
 			}
 			if(turning && turnNum == 1) {
+				System.out.println("first turning");
 				if(!controller.getOrientation().equals(firstTurnTargetDir)) {
 					// apply first turn direction
 					if(firstTurnDir.equals(RelativeDirection.LEFT)) {
@@ -137,8 +144,10 @@ public class LaneChanger {
 					}
 				}
 			} else if(turning && turnNum == 2) {
+				System.out.println("second turning");
 				if(!controller.getOrientation().equals(carOri)) {
-					if(controller.getLastTurnDirection().equals(RelativeDirection.LEFT)) {
+					// turn opposite direction to first turn direction
+					if(firstTurnDir.equals(RelativeDirection.LEFT)) {
 						controller.turnRight(delta);
 					} else {
 						controller.turnLeft(delta);
