@@ -91,7 +91,7 @@ public class LaneChanger {
 		 * @param laneNum negative lane num for lanes at the car's left, positive for right, 0 for current lane
 		 * @param handler
 		 */
-		public void setChangeLane(MyAIController controller, float delta, int laneNum, TrapHandler handler) {
+		public void setChangeLane(MyAIController controller, float delta, int laneNum) {
 			System.out.println("set target lane num = " + laneNum);
 			System.out.println("orientation: " + controller.getOrientation());
 			readjust(controller, delta);
@@ -143,7 +143,7 @@ public class LaneChanger {
 		 * @param delta
 		 * @param handler
 		 */
-		public void changeLane(MyAIController controller, float delta, TrapHandler handler) {
+		public void changeLane(MyAIController controller, float delta) {
 			controller.applyReverseAcceleration();
 			
 			// find best lane
@@ -162,7 +162,7 @@ public class LaneChanger {
 				}
 			}
 			// move to best lane
-			setChangeLane(controller, delta, bestLaneNum, handler);
+			setChangeLane(controller, delta, bestLaneNum);
 		}
 		
 		/**

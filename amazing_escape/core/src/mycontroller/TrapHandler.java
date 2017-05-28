@@ -51,7 +51,7 @@ public class TrapHandler {
 				needLaneChange = true;
 			} else {  // no grass in front
 				if(changer.canChangeLane(controller)) {
-					changer.changeLane(controller, delta, this);
+					changer.changeLane(controller, delta);
 					needLaneChange = false;
 				} else {
 					movReverse(controller);
@@ -65,7 +65,7 @@ public class TrapHandler {
 					needLaneChange = true;
 				} else {   // no grass in front
 					if(changer.canChangeLane(controller)) {
-						changer.changeLane(controller, delta, this);
+						changer.changeLane(controller, delta);
 						needLaneChange = false;
 					} else {
 						movReverse(controller);
@@ -82,7 +82,7 @@ public class TrapHandler {
 				} else {  // no grass in front
 					if(needLaneChange == true) {
 						if(changer.canChangeLane(controller)) {
-							changer.changeLane(controller, delta, this);
+							changer.changeLane(controller, delta);
 							needLaneChange = false;
 						} else {
 							movReverse(controller);
@@ -97,7 +97,7 @@ public class TrapHandler {
 				// if no grass in front and can change lane
 				if(changer.canChangeLane(controller) && 
 						!TileChecker.getTileName(tile1).equals("Grass")) {
-					changer.changeLane(controller, delta, this);
+					changer.changeLane(controller, delta);
 					needLaneChange = false;
 				} else {
 					movReverse(controller);
@@ -135,7 +135,7 @@ public class TrapHandler {
 		if(bestLaneNum == 0) {  // stay at current lane
 			movForward(controller);
 		} else {  // best lane
-			changer.changeLane(controller, delta, this);
+			changer.changeLane(controller, delta);
 		}
 	}
 
