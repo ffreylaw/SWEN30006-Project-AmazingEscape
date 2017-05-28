@@ -213,6 +213,11 @@ public class LaneChanger {
 				} else {
 					turning = true;
 					turnNum = 2;
+					if(firstTurnDir.equals(RelativeDirection.LEFT)) {
+						controller.setLastTurnDirection(RelativeDirection.RIGHT);
+					} else {
+						controller.setLastTurnDirection(RelativeDirection.LEFT);
+					}
 				}
 			}
 		}

@@ -2,10 +2,7 @@ package mycontroller;
 
 import java.util.HashMap;
 
-import tiles.GrassTrap;
-import tiles.LavaTrap;
 import tiles.MapTile;
-import tiles.MudTrap;
 import tiles.TrapTile;
 import utilities.Coordinate;
 import world.WorldSpatial;
