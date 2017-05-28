@@ -101,7 +101,6 @@ public class TrapHandler {
 					movReverse(controller);
 				}
 			} else {
-				System.out.println("calcScoreMov");
 				calcScoreMov(controller, delta);
 			}
 		}
@@ -125,9 +124,6 @@ public class TrapHandler {
 				bestLaneScore = score;
 			}
 		}
-		
-//		System.out.println("bestLaneNum = " + bestLaneNum);
-//		System.out.println("bestLaneScore = " + bestLaneScore);
 
 		// move to best lane
 		if(bestLaneNum == 0) {  // stay at current lane
@@ -165,7 +161,11 @@ public class TrapHandler {
 		}
 	}
 	
-	/** Check if any traps ahead */
+	/** 
+	 * Check if any traps ahead
+	 * @param controller
+	 * @return
+	 */
 	public boolean checkTrap(MyAIController controller) {
 		HashMap<Coordinate, MapTile> currentView = controller.getView();
 		Coordinate currentPosition = new Coordinate(controller.getPosition());
@@ -220,13 +220,14 @@ public class TrapHandler {
 	 * @param delta
 	 */
 	public void readjust(MyAIController controller, float delta) {
-		if(controller.getLastTurnDirection() != null){
-			if((!changer.isTurning()))  // not turning
+		if(controller.getLastTurnDirection() != null) {
+			if((!changer.isTurning())) { // not turning
 				if(controller.getLastTurnDirection().equals(WorldSpatial.RelativeDirection.RIGHT)) {
 					controller.adjustRight(controller.getOrientation(), delta);
 				} else {
 					controller.adjustLeft(controller.getOrientation(), delta);
 				}
 			}
+		}
 	}
 }

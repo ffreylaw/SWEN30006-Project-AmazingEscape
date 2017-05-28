@@ -43,11 +43,6 @@ public class MyAIController extends CarController {
 			updateState();
 		}
 		
-		Coordinate currentPosition = new Coordinate(getPosition());
-		
-		System.out.println("x = " + currentPosition.x + ", y = " + currentPosition.y);
-		System.out.println("state " + state);
-		
 		switch (this.state) {
 		case NONE: 		 	 basicHandler.handleNone(this, delta);			break;
 		case FOLLOWING_WALL: basicHandler.handleFollowingWall(this, delta);	break;

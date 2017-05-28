@@ -83,15 +83,9 @@ public class LaneChanger {
 		 * @param handler
 		 */
 		public void setChangeLane(MyAIController controller, float delta, int laneNum) {
-			System.out.println("set target lane num = " + laneNum);
-			System.out.println("orientation: " + controller.getOrientation());
 			
 			// set last tile
 			turningTile = TileChecker.getTileAt(1, laneNum, controller, controller.getPosition());
-			
-			Coordinate currentPosition = new Coordinate(controller.getPosition());
-			
-			System.out.println("turning tile at " + (currentPosition.x+1) + ", " + (currentPosition.y - laneNum));
 			
 			// set other variables for changing lane
 			changingLane = true;
@@ -144,9 +138,7 @@ public class LaneChanger {
 				if(i==0) {  // skip current lane
 					continue;
 				}
-				System.out.println("currentPos = " + controller.getPosition());
 				int score = CalculateScore.calcLaneScore(controller, i);
-				System.out.println("lane " + i + " Score = " + score);
 				if(score < bestLaneScore) {
 					bestLaneNum = i;
 					bestLaneScore = score;
@@ -163,14 +155,11 @@ public class LaneChanger {
 		 * @param handler
 		 */
 		public void doLaneChange(MyAIController controller, float delta) {
-			System.out.println("Changing lane");
-			System.out.println(controller.getOrientation());
 			if(controller.getVelocity() < 1) {
 				controller.applyForwardAcceleration();
 				return;
 			}
 			if(turning && turnNum == 1) {
-				System.out.println("first turning");
 				if(!controller.getOrientation().equals(firstTurnTargetDir)) {
 					// apply first turn direction
 					if(firstTurnDir.equals(RelativeDirection.LEFT)) {
@@ -187,7 +176,6 @@ public class LaneChanger {
 					}
 				}
 			} else if(turning && turnNum == 2) {
-				System.out.println("second turning");
 				if(!controller.getOrientation().equals(carOri)) {
 					// turn opposite direction to first turn direction
 					if(firstTurnDir.equals(RelativeDirection.LEFT)) {
