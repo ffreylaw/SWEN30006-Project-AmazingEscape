@@ -169,39 +169,14 @@ public class TrapHandler {
 	public boolean checkTrap(MyAIController controller) {
 		HashMap<Coordinate, MapTile> currentView = controller.getView();
 		Coordinate currentPosition = new Coordinate(controller.getPosition());
-		switch(controller.getOrientation()) {
-		case EAST:
-			for(int i=1; i<=3; i++) {  // right
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
-				if(tile instanceof TrapTile) {  // trap detected
-					return true;
-				}
+		for(int i=1; i<=3; i++) {
+			MapTile tile = TileChecker.getTileAt(i, 0, controller, controller.getPosition());
+			if(tile.getName().equals("Wall")) {
+				break;
 			}
-			break;
-		case NORTH:
-			for(int j=1; j<=3; j++) {  // top
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+j));
-				if(tile instanceof TrapTile) {  // trap detected
-					return true;
-				}
+			if(tile instanceof TrapTile) {  // trap detected
+				return true;
 			}
-			break;
-		case SOUTH:
-			for(int j=-3; j<=-1; j++) {  // bot
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+j));
-				if(tile instanceof TrapTile) {  // trap detected
-					return true;
-				}
-			}
-			break;
-		case WEST:
-			for(int i=-3; i<=-1; i++) {  // left
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
-				if(tile instanceof TrapTile) {  // trap detected
-					return true;
-				}
-			}
-			break;
 		}
 		return false;
 	}
