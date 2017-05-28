@@ -93,7 +93,7 @@ public class BasicHandler {
 			// If there is wall ahead, turn right!
 			if (checkWallAhead(controller)) {
 				lastTurnDirection = WorldSpatial.RelativeDirection.RIGHT;
-				isTurningRight = true;				
+				isTurningRight = true;
 			}
 		} else {
 			// This indicates that I can do a left turn if I am not turning right

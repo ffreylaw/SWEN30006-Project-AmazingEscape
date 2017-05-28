@@ -25,11 +25,11 @@ public class UTurn implements DeadEndAction {
 		
 		// stop the vehicle
 		if (!isDecelerated) {
-			controller.applyBrake();
+			controller.applyReverseAcceleration();
 		}
 		
 		// check if is decelerated
-		if (controller.getVelocity() <= 0.1) {
+		if (controller.getVelocity() <= 0.1 && !isDecelerated) {
 			isDecelerated = true;
 		}
 		
