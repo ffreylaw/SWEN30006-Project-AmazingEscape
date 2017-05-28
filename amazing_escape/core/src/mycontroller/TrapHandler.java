@@ -1,10 +1,17 @@
-package mycontroller;
+/* 
+ * SWEN30006 Software Modelling and Design
+ * Project C - Amazing Escape
+ * 
+ * Author: Pei-Yun Sun <667816>
+ * Author: Geoffrey Law <759218>
+ * Author: HangChen Xiong <753057>
+ * 
+ */
 
-import java.util.HashMap;
+package mycontroller;
 
 import tiles.MapTile;
 import tiles.TrapTile;
-import utilities.Coordinate;
 import world.WorldSpatial;
 
 public class TrapHandler {
@@ -167,8 +174,6 @@ public class TrapHandler {
 	 * @return
 	 */
 	public boolean checkTrap(MyAIController controller) {
-		HashMap<Coordinate, MapTile> currentView = controller.getView();
-		Coordinate currentPosition = new Coordinate(controller.getPosition());
 		for(int i=1; i<=3; i++) {
 			MapTile tile = TileChecker.getTileAt(i, 0, controller, controller.getPosition());
 			if(tile.getName().equals("Wall")) {
