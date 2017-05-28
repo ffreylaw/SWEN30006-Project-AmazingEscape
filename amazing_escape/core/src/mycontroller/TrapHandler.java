@@ -12,28 +12,25 @@ import utilities.Coordinate;
 public class TrapHandler {
 
 	private boolean needLaneChange;
-	
 	private LaneChanger changer;
-
-	private boolean changingLane;  // for lane change
 	
-	public boolean getChangingLane() {
-		return changingLane;
-	}
-
+	/**
+	 * Constructor
+	 */
 	public TrapHandler() {
 		needLaneChange = false;
-		changingLane = false;
 		changer = new LaneChanger();
 	}
 	
-	public void setChangingLane(boolean changing) {
-		changingLane = changing;
-	}
-
+	/**
+	 * Handle the traps
+	 * @param controller
+	 * @param delta
+	 */
 	public void handle(MyAIController controller, float delta) {
-		if(changingLane) {
-			changer.doLaneChange(controller, delta, this);
+		
+		if(changer.isChangingLane()) {
+			changer.doLaneChange(controller, delta);  // delegate handling to LaneChanger
 			return;
 		}
 		
@@ -45,11 +42,11 @@ public class TrapHandler {
 		MapTile tile2 = TileChecker.getTileAt(2, 0, controller, pos);
 		MapTile tile3  = TileChecker.getTileAt(3, 0, controller, pos);
 
-		if(getTileName(tile1).equals("Wall")) {  // wall in front
+		if(TileChecker.getTileName(tile1).equals("Wall")) {  // wall in front
 			movReverse(controller);
 			needLaneChange = true;
-		} else if(getTileName(tile2).equals("Wall")) {  // wall at 2 tile away
-			if(getTileName(tile1).equals("Grass")) {  // grass in front
+		} else if(TileChecker.getTileName(tile2).equals("Wall")) {  // wall at 2 tile away
+			if(TileChecker.getTileName(tile1).equals("Grass")) {  // grass in front
 				movReverse(controller);
 				needLaneChange = true;
 			} else {  // no grass in front
@@ -61,9 +58,9 @@ public class TrapHandler {
 					needLaneChange = true;
 				}
 			}
-		} else if(getTileName(tile3).equals("Wall")) {  // wall at 3 tile away
-			if(getTileName(tile2).equals("Grass")) {  // grass at 2 tile away
-				if(getTileName(tile1).equals("Grass")) {  // grass in front
+		} else if(TileChecker.getTileName(tile3).equals("Wall")) {  // wall at 3 tile away
+			if(TileChecker.getTileName(tile2).equals("Grass")) {  // grass at 2 tile away
+				if(TileChecker.getTileName(tile1).equals("Grass")) {  // grass in front
 					movReverse(controller);
 					needLaneChange = true;
 				} else {   // no grass in front
@@ -76,7 +73,7 @@ public class TrapHandler {
 					}
 				}
 			} else {  // no grass at two 2 tile away
-				if(getTileName(tile1).equals("Grass")) {  // grass in front
+				if(TileChecker.getTileName(tile1).equals("Grass")) {  // grass in front
 					if(needLaneChange == true) {
 						movReverse(controller);
 					} else {
@@ -97,7 +94,9 @@ public class TrapHandler {
 			}
 		} else {  // no wall ahead
 			if(needLaneChange == true) {
-				if(changer.canChangeLane(controller) && !getTileName(tile1).equals("Grass")) {  // no grass in front and can change lane
+				// if no grass in front and can change lane
+				if(changer.canChangeLane(controller) && 
+						!TileChecker.getTileName(tile1).equals("Grass")) {
 					changer.changeLane(controller, delta, this);
 					needLaneChange = false;
 				} else {
@@ -110,12 +109,16 @@ public class TrapHandler {
 		}
 	}
 
+	/**
+	 * Calculate the scores to choose a best movement (best lane),
+	 * could choose to stay at current lane
+	 * @param controller
+	 * @param delta
+	 */
 	private void calcScoreMov(MyAIController controller, float delta) {
 		// find best lane
 		int bestLaneNum = 0;
 		int bestLaneScore = CalculateScore.calcLaneScore(controller, 0);  // the lower the better
-		
-		System.out.println("line 0 score: " + bestLaneScore);
 		
 		for(int i=-3; i<=3; i++) {
 			int score = CalculateScore.calcLaneScore(controller, i);
@@ -125,8 +128,8 @@ public class TrapHandler {
 			}
 		}
 		
-		System.out.println("bestLaneNum = " + bestLaneNum);
-		System.out.println("bestLaneScore = " + bestLaneScore);
+//		System.out.println("bestLaneNum = " + bestLaneNum);
+//		System.out.println("bestLaneScore = " + bestLaneScore);
 
 		// move to best lane
 		if(bestLaneNum == 0) {  // stay at current lane
@@ -135,30 +138,25 @@ public class TrapHandler {
 			changer.changeLane(controller, delta, this);
 		}
 	}
-	
-	public String getTileName(MapTile tile) {
-		if(tile.getName().equals("Trap")) {
-			if(tile instanceof GrassTrap) {
-				return "Grass";
-			} else if(tile instanceof MudTrap) {
-				return "Mud";
-			} else if(tile instanceof LavaTrap) {
-				return "Lava";
-			}
-		}
-		return tile.getName();
-	}
 
-	public void movForward(MyAIController controller) {
+	/**
+	 * Let the car move forward
+	 * @param controller
+	 */
+	private void movForward(MyAIController controller) {
 		if(controller.isReversing()) {
 			controller.applyBrake();
 		} else {
-			if(controller.getVelocity() < 2) {
+			if(controller.getVelocity() < 1) {
 				controller.applyForwardAcceleration();
 			}
 		}
 	}
 
+	/** 
+	 * Let the car move backward
+	 * @param controller
+	 */
 	private void movReverse(MyAIController controller) {
 		if(controller.isReversing()) {
 			if(controller.getVelocity() < 1) {
@@ -210,4 +208,11 @@ public class TrapHandler {
 		return false;
 	}
 	
+	/**
+	 * Return a boolean value of whether the car is changing lane
+	 * @return
+	 */
+	public boolean isChangingLane() {
+		return changer.isChangingLane();
+	}
 }

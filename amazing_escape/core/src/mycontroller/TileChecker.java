@@ -10,6 +10,20 @@ import utilities.Coordinate;
 
 public final class TileChecker {
 	
+	/**
+	 * Avoiding instantiation, since the class is a functional class
+	 */
+	private TileChecker() {
+	}
+	
+	/**
+	 * Get the tile at a specific position provided
+	 * @param numAhead
+	 * @param numRight
+	 * @param controller
+	 * @param pos
+	 * @return
+	 */
 	public static MapTile getTileAt(int numAhead, int numRight, MyAIController controller, String pos) {
 		HashMap<Coordinate,MapTile> currentView = controller.getView();
 		Coordinate currentPosition = new Coordinate(pos);
@@ -26,9 +40,11 @@ public final class TileChecker {
 		return null;
 	}
 	
-	private TileChecker() {
-	}
-	
+	/**
+	 * Get the name of the tile
+	 * @param tile
+	 * @return
+	 */
 	public static String getTileName(MapTile tile) {
 		if(tile.getName().equals("Trap")) {
 			if(tile instanceof GrassTrap) {

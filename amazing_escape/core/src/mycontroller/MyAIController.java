@@ -41,7 +41,7 @@ public class MyAIController extends CarController {
 	@Override
 	public void update(float delta) {
 		checkDirectionChange();
-		if(!isTurningLeft && !isTurningRight && !trapHandler.getChangingLane()) {
+		if(!isTurningLeft && !isTurningRight && !trapHandler.isChangingLane()) {
 			updateState();
 		}
 		

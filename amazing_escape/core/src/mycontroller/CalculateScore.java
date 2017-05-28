@@ -3,11 +3,19 @@ package mycontroller;
 
 import tiles.MapTile;
 
-public class CalculateScore {
+public final class CalculateScore {
+	
 	public static final int MUD_SCORE = 1;
 	public static final int GRASS_SCORE = 2;
 	public static final int LAVA_SCORE = 3;
-	public static final int WALL_SCORE = 10000;  // high score for wall
+	// high score for wall, blocking the car to change to the lanes with walls
+	public static final int WALL_SCORE = 10000;
+	
+	/**
+	 * Avoiding instantiation, since the class is a functional class
+	 */
+	private CalculateScore() {	
+	}
 
 	/**
 	 * Get the lane score (score on that lane + score of getting to that lane)
@@ -28,7 +36,6 @@ public class CalculateScore {
 	 */
 	private static int getLaneScore(MyAIController controller, int laneNum) {
 		int score = 0;
-		
 		// score on that lane
 		for(int i=1; i<=3; i++) {
 			MapTile tile = TileChecker.getTileAt(i, laneNum,controller, controller.getPosition());
@@ -45,12 +52,12 @@ public class CalculateScore {
 	 */
 	private static int getRouteScore(MyAIController controller, int laneNum) {
 		int score = 0;
-		if(laneNum < 0) {  // left
+		if(laneNum < 0) {  // < 0, left of the car
 			for(int i=0; i>laneNum; i--) {
 				MapTile tile = TileChecker.getTileAt(1, i, controller, controller.getPosition());
 				score += getTileScore(tile, controller);
 			}
-		} else {  // > 0, right
+		} else {  // > 0, right of the car
 			for(int i=0; i<laneNum; i++) {
 				MapTile tile = TileChecker.getTileAt(1, i, controller, controller.getPosition());
 				score += getTileScore(tile, controller);

@@ -15,6 +15,14 @@ public class LaneChanger {
 		private boolean turning;  // turning first time during change of lane
 		private Direction carOri;  // car direction before changing lane, target direction of the second turn
 		private Direction firstTurnTargetDir;  // target direction of the first turn when changing lane
+		private boolean changingLane;
+		
+		/**
+		 * Constructor
+		 */
+		LaneChanger() {
+			changingLane = false;
+		}
 		
 		/**
 		 * Readjust the car to the orientation we are in.
@@ -30,6 +38,14 @@ public class LaneChanger {
 						controller.adjustLeft(controller.getOrientation(), delta);
 					}
 				}
+		}
+		
+		/**
+		 * Return a boolean value of whether the car is changing lane
+		 * @return
+		 */
+		public boolean isChangingLane() {
+			return changingLane;
 		}
 		
 		/**
@@ -89,7 +105,7 @@ public class LaneChanger {
 			System.out.println("turning tile at " + (currentPosition.x+1) + ", " + (currentPosition.y - laneNum));
 			
 			// set other variables for changing lane
-			handler.setChangingLane(true);
+			changingLane = true;
 			turning = true;
 			turnNum = 1;
 			carOri = controller.getOrientation();
@@ -155,11 +171,11 @@ public class LaneChanger {
 		 * @param delta
 		 * @param handler
 		 */
-		public void doLaneChange(MyAIController controller, float delta, TrapHandler handler) {
+		public void doLaneChange(MyAIController controller, float delta) {
 			System.out.println("Changing lane");
 			System.out.println(controller.getOrientation());
 			if(controller.getVelocity() < 1) {
-				handler.movForward(controller);
+				controller.applyForwardAcceleration();
 				return;
 			}
 			if(turning && turnNum == 1) {
@@ -190,7 +206,7 @@ public class LaneChanger {
 					}
 				} else {
 					turning = false;
-					handler.setChangingLane(false);  // finish changing lane
+					changingLane = false;  // finish changing lane
 				}
 			} else {  // not turning
 				// get this tile
@@ -200,7 +216,9 @@ public class LaneChanger {
 
 				// increment changedLane number if tile changed
 				if(!thisTile.equals(turningTile)) {  // cross a tile
-					handler.movForward(controller);
+					if(controller.getVelocity() < 1) {
+						controller.applyForwardAcceleration();
+					}
 				} else {
 					turning = true;
 					turnNum = 2;
