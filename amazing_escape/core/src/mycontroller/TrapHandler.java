@@ -32,11 +32,6 @@ public class TrapHandler {
 	}
 
 	public void handle(MyAIController controller, float delta) {
-//		if(getTileAt(1,0,controller,controller.getPosition()) instanceof MudTrap) {
-//			movForward(controller);
-//			return;
-//		}
-		
 		if(changingLane) {
 			changer.doLaneChange(controller, delta, this);
 			return;
