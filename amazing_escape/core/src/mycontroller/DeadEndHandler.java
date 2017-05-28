@@ -50,8 +50,10 @@ public class DeadEndHandler {
 	 * @return chosen action
 	 */
 	private DeadEndAction chooseAction(Coordinate currentPosition, HashMap<Coordinate, MapTile> currentView) {
-//		return new ThreePointTurn();
-		return new UTurn();
+		/* These three actions can handle all cases, any one of them should be OK, even if very little spaces dead-end :) */
+		return new UTurn();			 // the fastest way to get out of dead-end
+//		return new ThreePointTurn(); // slower than u-turn
+//		return new ReverseOut();	 // longer version of three-point-turn, better not to use
 	}
 	
 	/**
