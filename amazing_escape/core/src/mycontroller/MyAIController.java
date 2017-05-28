@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import controller.CarController;
 import tiles.MapTile;
-import tiles.TrapTile;
 import utilities.Coordinate;
 import world.Car;
 import world.WorldSpatial;
@@ -59,13 +58,13 @@ public class MyAIController extends CarController {
 	
 	private void updateState() {
 		if(state == State.NONE || state == State.FOLLOWING_WALL) {
-			if(checkDeadEnd()) {  // dead end detected
+			if(deadEndHandler.checkDeadEnd(this)) {  // dead end detected
 				state = State.DEAD_END;
-			} else if(checkTrap()) {  // traps detected
+			} else if(trapHandler.checkTrap(this)) {  // traps detected
 				state = State.TRAP;
 			}
 		} else if(state == State.TRAP) {
-			if(!checkTrap()) {  // no more traps
+			if(!trapHandler.checkTrap(this)) {  // no more traps
 				state = State.NONE;
 			}
 		}
@@ -119,164 +118,6 @@ public class MyAIController extends CarController {
 //		}
 //		return false;
 //	}
-	
-	/** Check if any traps ahead */
-	private boolean checkTrap() {
-		HashMap<Coordinate, MapTile> currentView = getView();
-		Coordinate currentPosition = new Coordinate(getPosition());
-		switch(getOrientation()) {
-		case EAST:
-			for(int i=1; i<=3; i++) {  // right
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
-				if(tile instanceof TrapTile) {  // trap detected
-					return true;
-				}
-			}
-			break;
-		case NORTH:
-			for(int j=1; j<=3; j++) {  // top
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+j));
-				if(tile instanceof TrapTile) {  // trap detected
-					return true;
-				}
-			}
-			break;
-		case SOUTH:
-			for(int j=-3; j<=-1; j++) {  // bot
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+j));
-				if(tile instanceof TrapTile) {  // trap detected
-					return true;
-				}
-			}
-			break;
-		case WEST:
-			for(int i=-3; i<=-1; i++) {  // left
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
-				if(tile instanceof TrapTile) {  // trap detected
-					return true;
-				}
-			}
-			break;
-		}
-		return false;
-	}
-	
-	private boolean checkDeadEnd() {
-		HashMap<Coordinate, MapTile> currentView = getView();
-		Coordinate currentPosition = new Coordinate(getPosition());
-		boolean flag = false;
-		switch (getOrientation()) {
-		case EAST:
-			for (int i = 1; i <= 3; i++) {
-				if (flag) {
-					break;
-				}
-				boolean isWallAhead = false;
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
-				if (tile.getName().equals("Wall")) {
-					isWallAhead = true;
-					for (int j = -1; j >= -i; j--) {
-						tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
-						if (!tile.getName().equals("Wall")) {
-							break;
-						}
-						if (tile.getName().equals("Wall")) {
-							tile = currentView.get(new Coordinate(currentPosition.x+i-1, currentPosition.y+j));
-							if (tile.getName().equals("Wall") && checkNorth(currentView)) {
-								flag = true;
-							}
-						}
-					}
-				}
-				if (isWallAhead && !flag) {
-					break;
-				}
-			}
-			break;
-		case NORTH:
-			for (int j = 1; j <= 3; j++) {
-				if (flag) {
-					break;
-				}
-				boolean isWallAhead = false;
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+j));
-				if (tile.getName().equals("Wall")) {
-					isWallAhead = true;
-					for (int i = 1; i <= j; i++) {
-						tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
-						if (!tile.getName().equals("Wall")) {
-							break;
-						}
-						if (tile.getName().equals("Wall")) {
-							tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j-1));
-							if (tile.getName().equals("Wall") && checkWest(currentView)) {
-								flag = true;
-							}
-						}
-					}
-				}
-				if (isWallAhead && !flag) {
-					break;
-				}
-			}
-			break;
-		case SOUTH:
-			for (int j = -1; j >= -3; j--) {
-				if (flag) {
-					break;
-				}
-				boolean isWallAhead = false;
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+j));
-				if (tile.getName().equals("Wall")) {
-					isWallAhead = true;
-					for (int i = -1; i >= j; i--) {
-						tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
-						if (!tile.getName().equals("Wall")) {
-							break;
-						}
-						if (tile.getName().equals("Wall")) {
-							tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j+1));
-							if (tile.getName().equals("Wall") && checkEast(currentView)) {
-								flag = true;
-							}
-						}
-					}
-				}
-				if (isWallAhead && !flag) {
-					break;
-				}
-			}
-			break;
-		case WEST:
-			for (int i = -1; i >= -3; i--) {
-				if (flag) {
-					break;
-				}
-				boolean isWallAhead = false;
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
-				if (tile.getName().equals("Wall")) {
-					isWallAhead = true;
-					for (int j = 1; j <= Math.abs(i); j++) {
-						tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
-						if (!tile.getName().equals("Wall")) {
-							break;
-						}
-						if (tile.getName().equals("Wall")) {
-							tile = currentView.get(new Coordinate(currentPosition.x+i+1, currentPosition.y+j));
-							if (tile.getName().equals("Wall") && checkSouth(currentView)) {
-								flag = true;
-							}
-						}
-					}
-				}
-				if (isWallAhead && !flag) {
-					break;
-				}
-			}
-			break;
-		}
-		return flag;
-	}
 	
 	public void changeState(State state) {
 		this.state = state;
@@ -342,7 +183,7 @@ public class MyAIController extends CarController {
 //		}
 		
 		if (!isTurningRight && !isTurningLeft) {
-			if (checkDeadEnd()) changeState(State.DEAD_END);
+			if (deadEndHandler.checkDeadEnd(this)) changeState(State.DEAD_END);
 		}
 		
 		// Readjust the car if it is misaligned.

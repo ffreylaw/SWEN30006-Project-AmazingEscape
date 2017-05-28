@@ -65,9 +65,9 @@ public class World {
 		System.out.println(map.getLayers().get("Wall"));
 		
 		// Add the car controller
-//		controller = new ManualController(car);
+		controller = new ManualController(car);
 //		controller = new AIController(car);
-		controller = new MyAIController(car);
+//		controller = new MyAIController(car);
 	}
 	
 	private void initializeMap(TiledMap map2) {

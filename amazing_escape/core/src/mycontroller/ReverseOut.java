@@ -14,9 +14,6 @@ public class ReverseOut implements DeadEndAction {
 	
 	private WorldSpatial.Direction previousDirection = null;
 	
-//	private boolean flag = false;
-//	private boolean flag2 = false;
-	
 	public ReverseOut() {
 		isReverseTurningLeft = false;
 		isReverseTurningRight = false;
@@ -28,23 +25,6 @@ public class ReverseOut implements DeadEndAction {
 		HashMap<Coordinate, MapTile> currentView = controller.getView();
 		checkDirectionChange(controller);
 		
-//		if ((controller.getVelocity() < 2) && !flag) {
-//			System.out.println("-2");
-//			controller.applyForwardAcceleration();
-//			return;
-//		} else {
-//			flag = true;
-//		}
-//		if (flag && !flag2) {
-//			System.out.println("-1");
-//			if ((controller.getVelocity() < 2) && !flag2) {
-//				controller.applyReverseAcceleration();
-//			} else {
-//				flag2 = true;
-//			}
-//		}
-//		if (flag2) {
-//			System.out.println(controller.getOrientation());
 		if (!isFollowingWall) {
 			if (controller.getVelocity() < 1) {
 				controller.applyReverseAcceleration();
@@ -187,6 +167,10 @@ public class ReverseOut implements DeadEndAction {
 		}
 	}
 	
+	/**
+	 * Check
+	 * @param controller
+	 */
 	private void checkDirectionChange(MyAIController controller) {
 		if (previousDirection == null) {
 			previousDirection = controller.getOrientation();
