@@ -2,6 +2,7 @@
  * SWEN30006 Software Modelling and Design
  * Project C - Amazing Escape
  * 
+ * Group 66
  * Author: Pei-Yun Sun <667816>
  * Author: Geoffrey Law <759218>
  * Author: HangChen Xiong <753057>
