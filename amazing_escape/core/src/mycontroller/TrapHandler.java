@@ -180,7 +180,7 @@ public class TrapHandler {
 			if(tile.getName().equals("Wall")) {
 				break;
 			}
-			if(tile instanceof TrapTile) {  // trap detected
+			if(tile instanceof TrapTile && !TileChecker.getTileName(tile).equals("Mud")) {  // trap detected
 				return true;
 			}
 		}
