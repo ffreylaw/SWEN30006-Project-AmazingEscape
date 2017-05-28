@@ -9,13 +9,18 @@ import world.WorldSpatial.Direction;
 import world.WorldSpatial.RelativeDirection;
 
 public class LaneChanger {
-		private RelativeDirection firstTurnDir;
+		private RelativeDirection firstTurnDir;  // record whether the first turn is turning left or right
 		private MapTile turningTile;  // turning point of the second turn during change of lane
 		private int turnNum;  // either 1 or 2
 		private boolean turning;  // turning first time during change of lane
 		private Direction carOri;  // car direction before changing lane, target direction of the second turn
 		private Direction firstTurnTargetDir;  // target direction of the first turn when changing lane
 		
+		/**
+		 * Readjust the car to the orientation we are in.
+		 * @param controller
+		 * @param delta
+		 */
 		public void readjust(MyAIController controller, float delta) {
 			if(controller.getLastTurnDirection() != null){
 				if((!turning))  // not turning
@@ -27,7 +32,13 @@ public class LaneChanger {
 				}
 		}
 		
-		private Direction getOri(Direction currentDir, boolean left) {  // left or right of current direction
+		/**
+		 * Get the orientation on the car's left or right
+		 * @param currentDir
+		 * @param left
+		 * @return
+		 */
+		private Direction getOri(Direction currentDir, boolean left) {
 			switch(currentDir) {
 			case EAST:
 				if(left) {
@@ -57,13 +68,20 @@ public class LaneChanger {
 			return null;  // will never return null
 		}
 		
+		/**
+		 * Set the variables for lane changing
+		 * @param controller
+		 * @param delta
+		 * @param laneNum negative lane num for lanes at the car's left, positive for right, 0 for current lane
+		 * @param handler
+		 */
 		public void setChangeLane(MyAIController controller, float delta, int laneNum, TrapHandler handler) {
 			System.out.println("set target lane num = " + laneNum);
 			System.out.println("orientation: " + controller.getOrientation());
 			readjust(controller, delta);
 			
 			// set last tile
-			turningTile = handler.getTileAt(1, laneNum, controller, controller.getPosition());
+			turningTile = TileChecker.getTileAt(1, laneNum, controller, controller.getPosition());
 			
 			HashMap<Coordinate,MapTile> currentView = controller.getView();
 			Coordinate currentPosition = new Coordinate(controller.getPosition());
@@ -85,13 +103,17 @@ public class LaneChanger {
 			}	
 		}
 		
-		public boolean canChangeLane(MyAIController controller, TrapHandler handler) {
-			// check if can change lane
+		/**
+		 * Check if the car can change lane
+		 * @param controller
+		 * @return
+		 */
+		public boolean canChangeLane(MyAIController controller) {
 			for(int i=-3; i<=3; i++) {
 				if(i==0) {  // skip current lane
 					continue;
 				}
-				int score = CalculateScore.calcLaneScore(controller, i, handler);
+				int score = CalculateScore.calcLaneScore(controller, i);
 				if(score < CalculateScore.WALL_SCORE) {  // no wall on that lane
 					return true;
 				}
@@ -99,18 +121,24 @@ public class LaneChanger {
 			return false;
 		}
 		
+		/**
+		 * Find a best lane and setChangeLane
+		 * @param controller
+		 * @param delta
+		 * @param handler
+		 */
 		public void changeLane(MyAIController controller, float delta, TrapHandler handler) {
 			controller.applyReverseAcceleration();
 			
 			// find best lane
 			int bestLaneNum = -1;
-			int bestLaneScore = CalculateScore.calcLaneScore(controller, -1, handler);  // the lower the better
+			int bestLaneScore = CalculateScore.calcLaneScore(controller, -1);  // the lower the better
 			for(int i=-3; i<=3; i++) {
 				if(i==0) {  // skip current lane
 					continue;
 				}
 				System.out.println("currentPos = " + controller.getPosition());
-				int score = CalculateScore.calcLaneScore(controller, i, handler);
+				int score = CalculateScore.calcLaneScore(controller, i);
 				System.out.println("lane " + i + " Score = " + score);
 				if(score < bestLaneScore) {
 					bestLaneNum = i;
@@ -121,6 +149,12 @@ public class LaneChanger {
 			setChangeLane(controller, delta, bestLaneNum, handler);
 		}
 		
+		/**
+		 * keep doing lane changing
+		 * @param controller
+		 * @param delta
+		 * @param handler
+		 */
 		public void doLaneChange(MyAIController controller, float delta, TrapHandler handler) {
 			System.out.println("Changing lane");
 			System.out.println(controller.getOrientation());

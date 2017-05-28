@@ -10,43 +10,43 @@ public class CalculateScore {
 	public static final int WALL_SCORE = 10000;  // high score for wall
 
 	/* Get the lane score (score on that lane + score of getting to that lane)*/
-	public static int calcLaneScore(MyAIController controller, int laneNum, TrapHandler handler) {
-		int score = getLaneScore(controller, handler, laneNum) + getRouteScore(controller, laneNum, handler);
+	public static int calcLaneScore(MyAIController controller, int laneNum) {
+		int score = getLaneScore(controller, laneNum) + getRouteScore(controller, laneNum);
 		return score;
 	}
 
 	/* Get the sum of score of each tile on that lane */
-	private static int getLaneScore(MyAIController controller, TrapHandler handler, int laneNum) {
+	private static int getLaneScore(MyAIController controller, int laneNum) {
 		int score = 0;
 		
 		// score on that lane
 		for(int i=1; i<=3; i++) {
-			MapTile tile = handler.getTileAt(i, laneNum,controller, controller.getPosition());
-			score += getTileScore(tile, handler);
+			MapTile tile = TileChecker.getTileAt(i, laneNum,controller, controller.getPosition());
+			score += getTileScore(tile, controller);
 		}
 		return score;
 	}
 	
 	/* Get the score of getting to that lane, return 0 if laneNum == 0 */
-	private static int getRouteScore(MyAIController controller, int laneNum, TrapHandler handler) {
+	private static int getRouteScore(MyAIController controller, int laneNum) {
 		int score = 0;
 		if(laneNum < 0) {  // left
 			for(int i=0; i>laneNum; i--) {
-				MapTile tile = handler.getTileAt(1, i, controller, controller.getPosition());
-				score += getTileScore(tile, handler);
+				MapTile tile = TileChecker.getTileAt(1, i, controller, controller.getPosition());
+				score += getTileScore(tile, controller);
 			}
 		} else {  // > 0, right
 			for(int i=0; i<laneNum; i++) {
-				MapTile tile = handler.getTileAt(1, i, controller, controller.getPosition());
-				score += getTileScore(tile, handler);
+				MapTile tile = TileChecker.getTileAt(1, i, controller, controller.getPosition());
+				score += getTileScore(tile, controller);
 			}
 		}
 		return score;
 	}
 	
 	/* Get the score of the tile */
-	private static int getTileScore(MapTile tile, TrapHandler handler) {
-		switch(handler.getTileName(tile)) {
+	private static int getTileScore(MapTile tile, MyAIController controller) {
+		switch(TileChecker.getTileName(tile)) {
 		case "Grass":
 			return GRASS_SCORE;
 		case "Lava":

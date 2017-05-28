@@ -41,9 +41,9 @@ public class TrapHandler {
 		
 		String pos = controller.getPosition();
 
-		MapTile tile1 = getTileAt(1, 0, controller, pos);
-		MapTile tile2 = getTileAt(2, 0, controller, pos);
-		MapTile tile3  = getTileAt(3, 0, controller, pos);
+		MapTile tile1 = TileChecker.getTileAt(1, 0, controller, pos);
+		MapTile tile2 = TileChecker.getTileAt(2, 0, controller, pos);
+		MapTile tile3  = TileChecker.getTileAt(3, 0, controller, pos);
 
 		if(getTileName(tile1).equals("Wall")) {  // wall in front
 			movReverse(controller);
@@ -53,7 +53,7 @@ public class TrapHandler {
 				movReverse(controller);
 				needLaneChange = true;
 			} else {  // no grass in front
-				if(changer.canChangeLane(controller, this)) {
+				if(changer.canChangeLane(controller)) {
 					changer.changeLane(controller, delta, this);
 					needLaneChange = false;
 				} else {
@@ -67,7 +67,7 @@ public class TrapHandler {
 					movReverse(controller);
 					needLaneChange = true;
 				} else {   // no grass in front
-					if(changer.canChangeLane(controller, this)) {
+					if(changer.canChangeLane(controller)) {
 						changer.changeLane(controller, delta, this);
 						needLaneChange = false;
 					} else {
@@ -84,7 +84,7 @@ public class TrapHandler {
 					}
 				} else {  // no grass in front
 					if(needLaneChange == true) {
-						if(changer.canChangeLane(controller, this)) {
+						if(changer.canChangeLane(controller)) {
 							changer.changeLane(controller, delta, this);
 							needLaneChange = false;
 						} else {
@@ -97,7 +97,7 @@ public class TrapHandler {
 			}
 		} else {  // no wall ahead
 			if(needLaneChange == true) {
-				if(changer.canChangeLane(controller, this) && !getTileName(tile1).equals("Grass")) {  // no grass in front and can change lane
+				if(changer.canChangeLane(controller) && !getTileName(tile1).equals("Grass")) {  // no grass in front and can change lane
 					changer.changeLane(controller, delta, this);
 					needLaneChange = false;
 				} else {
@@ -110,31 +110,15 @@ public class TrapHandler {
 		}
 	}
 
-	public MapTile getTileAt(int numAhead, int numRight, MyAIController controller, String pos) {
-		HashMap<Coordinate,MapTile> currentView = controller.getView();
-		Coordinate currentPosition = new Coordinate(pos);
-		switch(controller.getOrientation()) {
-		case EAST:
-			return currentView.get(new Coordinate(currentPosition.x+numAhead, currentPosition.y-numRight));
-		case NORTH:
-			return currentView.get(new Coordinate(currentPosition.x+numRight, currentPosition.y+numAhead));
-		case SOUTH:
-			return currentView.get(new Coordinate(currentPosition.x-numRight, currentPosition.y-numAhead));
-		case WEST:
-			return currentView.get(new Coordinate(currentPosition.x-numAhead, currentPosition.y+numRight));
-		}
-		return null;  // will never return null
-	}
-
 	private void calcScoreMov(MyAIController controller, float delta) {
 		// find best lane
 		int bestLaneNum = 0;
-		int bestLaneScore = CalculateScore.calcLaneScore(controller, 0, this);  // the lower the better
+		int bestLaneScore = CalculateScore.calcLaneScore(controller, 0);  // the lower the better
 		
 		System.out.println("line 0 score: " + bestLaneScore);
 		
 		for(int i=-3; i<=3; i++) {
-			int score = CalculateScore.calcLaneScore(controller, i, this);
+			int score = CalculateScore.calcLaneScore(controller, i);
 			if(score < bestLaneScore) {
 				bestLaneNum = i;
 				bestLaneScore = score;

@@ -3,7 +3,10 @@ package mycontroller;
 import java.util.HashMap;
 
 import controller.CarController;
+import tiles.GrassTrap;
+import tiles.LavaTrap;
 import tiles.MapTile;
+import tiles.MudTrap;
 import utilities.Coordinate;
 import world.Car;
 import world.WorldSpatial;
@@ -28,6 +31,7 @@ public class MyAIController extends CarController {
 	public static final int WALL_SENSITIVITY = 2;
 	public static final int EAST_THRESHOLD = 3;
 	
+	
 
 	public MyAIController(Car car) {
 		super(car);
@@ -35,6 +39,7 @@ public class MyAIController extends CarController {
 		this.trapHandler = new TrapHandler();
 		this.state = State.NONE;
 	}
+	
 
 	@Override
 	public void update(float delta) {
