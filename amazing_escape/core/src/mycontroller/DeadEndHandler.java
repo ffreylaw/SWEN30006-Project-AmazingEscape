@@ -53,7 +53,7 @@ public class DeadEndHandler {
 		boolean flag = false;
 		switch (controller.getOrientation()) {
 		case EAST:
-			for (int i = 1; i <= 3; i++) {	// east walls (front of car)
+			for (int i = 1; i <= 3; i++) {	// east walls (front of vehicle)
 				if (flag) {
 					break;
 				}
@@ -62,7 +62,7 @@ public class DeadEndHandler {
 				if (tile.getName().equals("Wall")) {
 					// if there a wall ahead
 					isWallAhead = true;
-					for (int j = -1; j >= -i; j--) {	// 
+					for (int j = -1; j >= -i; j--) {	// south walls (right of vehicle)
 						tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
 						if (!tile.getName().equals("Wall")) {
 							break;
@@ -81,7 +81,7 @@ public class DeadEndHandler {
 			}
 			break;
 		case NORTH:
-			for (int j = 1; j <= 3; j++) {
+			for (int j = 1; j <= 3; j++) {	// north walls (front of vehicle)
 				if (flag) {
 					break;
 				}
@@ -89,7 +89,7 @@ public class DeadEndHandler {
 				MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+j));
 				if (tile.getName().equals("Wall")) {
 					isWallAhead = true;
-					for (int i = 1; i <= j; i++) {
+					for (int i = 1; i <= j; i++) {	// east walls (right of vehicle)
 						tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
 						if (!tile.getName().equals("Wall")) {
 							break;
@@ -108,7 +108,7 @@ public class DeadEndHandler {
 			}
 			break;
 		case SOUTH:
-			for (int j = -1; j >= -3; j--) {
+			for (int j = -1; j >= -3; j--) {	// south walls (front of vehicle)
 				if (flag) {
 					break;
 				}
@@ -116,7 +116,7 @@ public class DeadEndHandler {
 				MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+j));
 				if (tile.getName().equals("Wall")) {
 					isWallAhead = true;
-					for (int i = -1; i >= j; i--) {
+					for (int i = -1; i >= j; i--) {	// west walls (right of vehicle)
 						tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
 						if (!tile.getName().equals("Wall")) {
 							break;
@@ -135,7 +135,7 @@ public class DeadEndHandler {
 			}
 			break;
 		case WEST:
-			for (int i = -1; i >= -3; i--) {
+			for (int i = -1; i >= -3; i--) {	// west walls (front of vehicle)
 				if (flag) {
 					break;
 				}
@@ -143,7 +143,7 @@ public class DeadEndHandler {
 				MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
 				if (tile.getName().equals("Wall")) {
 					isWallAhead = true;
-					for (int j = 1; j <= Math.abs(i); j++) {
+					for (int j = 1; j <= Math.abs(i); j++) {	// north walls (right of vehicle)
 						tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+j));
 						if (!tile.getName().equals("Wall")) {
 							break;
