@@ -9,13 +9,23 @@ public class CalculateScore {
 	public static final int LAVA_SCORE = 3;
 	public static final int WALL_SCORE = 10000;  // high score for wall
 
-	/* Get the lane score (score on that lane + score of getting to that lane)*/
+	/**
+	 * Get the lane score (score on that lane + score of getting to that lane)
+	 * @param controller
+	 * @param laneNum
+	 * @return
+	 */
 	public static int calcLaneScore(MyAIController controller, int laneNum) {
 		int score = getLaneScore(controller, laneNum) + getRouteScore(controller, laneNum);
 		return score;
 	}
 
-	/* Get the sum of score of each tile on that lane */
+	/**
+	 * Get the sum of score of each tile on that lane
+	 * @param controller
+	 * @param laneNum
+	 * @return
+	 */
 	private static int getLaneScore(MyAIController controller, int laneNum) {
 		int score = 0;
 		
@@ -27,7 +37,12 @@ public class CalculateScore {
 		return score;
 	}
 	
-	/* Get the score of getting to that lane, return 0 if laneNum == 0 */
+	/**
+	 * Get the score of getting to that lane, return 0 if laneNum == 0
+	 * @param controller
+	 * @param laneNum
+	 * @return
+	 */
 	private static int getRouteScore(MyAIController controller, int laneNum) {
 		int score = 0;
 		if(laneNum < 0) {  // left
@@ -44,7 +59,12 @@ public class CalculateScore {
 		return score;
 	}
 	
-	/* Get the score of the tile */
+	/**
+	 * Get the score of that tile
+	 * @param tile
+	 * @param controller
+	 * @return
+	 */
 	private static int getTileScore(MapTile tile, MyAIController controller) {
 		switch(TileChecker.getTileName(tile)) {
 		case "Grass":
