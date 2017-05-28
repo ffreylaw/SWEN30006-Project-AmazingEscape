@@ -11,13 +11,20 @@ public class ReverseOut implements DeadEndAction {
 	private boolean isReverseTurningLeft;
 	private boolean isReverseTurningRight;
 	private boolean isFollowingWall;
+	private boolean isDecelerated;
+	private boolean isReversing;
 	
 	private WorldSpatial.Direction previousDirection = null;
 	
+	/**
+	 * Construct an object of ReverseOut action
+	 */
 	public ReverseOut() {
 		isReverseTurningLeft = false;
 		isReverseTurningRight = false;
 		isFollowingWall = false;
+		isDecelerated = false;
+		isReversing = false;
 	}
 
 	@Override
@@ -25,48 +32,71 @@ public class ReverseOut implements DeadEndAction {
 		HashMap<Coordinate, MapTile> currentView = controller.getView();
 		checkDirectionChange(controller);
 		
-		if (!isFollowingWall) {
-			if (controller.getVelocity() < 1) {
-				controller.applyReverseAcceleration();
-			}
-			if (!controller.getOrientation().equals(WorldSpatial.Direction.NORTH)) {
-				controller.setLastTurnDirection(WorldSpatial.RelativeDirection.LEFT);
-				applyReverseLeft(controller, delta);
-			}
-			if (controller.checkSouth(currentView)) {
-				if (!controller.getOrientation().equals(WorldSpatial.Direction.EAST)) {
-					controller.setLastTurnDirection(WorldSpatial.RelativeDirection.RIGHT);
-					applyReverseRight(controller, delta);
-				} else {
-					isFollowingWall = true;
-				}
-			}
+		// if not decelerated
+		if (controller.getVelocity() >= 0.1 && !isDecelerated) {
+			controller.applyReverseAcceleration();
 		} else {
-			readjust(controller, delta);
-
-			if (isReverseTurningRight) {
-				applyReverseRight(controller, delta);
-			} else if (isReverseTurningLeft) {
-				if (!checkFollowingWall(controller)) {
-					applyReverseLeft(controller, delta);
-				} else {
-					isReverseTurningLeft = false;
-				}
-			} else if (checkFollowingWall(controller)) {
-				if (controller.getVelocity() < 3) {
-					controller.applyReverseAcceleration();
-				}
-				if (checkWallBehind(controller)) {
-					controller.setLastTurnDirection(WorldSpatial.RelativeDirection.RIGHT);
-					isReverseTurningRight = true;	
-				}
+			isDecelerated = true;
+		}
+		
+		if (isDecelerated) {
+			// if not reversing
+			if (controller.getVelocity() < 1.2 && !isReversing) {
+				controller.applyReverseAcceleration();
 			} else {
-				controller.setLastTurnDirection(WorldSpatial.RelativeDirection.LEFT);
-				isReverseTurningLeft = true;
+				isReversing = true;
+			}
+			
+			if (isReversing) {
+				if (!isFollowingWall) {
+					if (controller.getVelocity() < 1) {
+						controller.applyReverseAcceleration();
+					}
+					if (!controller.getOrientation().equals(WorldSpatial.Direction.NORTH)) {
+						controller.setLastTurnDirection(WorldSpatial.RelativeDirection.LEFT);
+						applyReverseLeft(controller, delta);
+					}
+					if (controller.checkSouth(currentView)) {
+						if (!controller.getOrientation().equals(WorldSpatial.Direction.EAST)) {
+							controller.setLastTurnDirection(WorldSpatial.RelativeDirection.RIGHT);
+							applyReverseRight(controller, delta);
+						} else {
+							isFollowingWall = true;
+						}
+					}
+				} else {
+					readjust(controller, delta);
+		
+					if (isReverseTurningRight) {
+						applyReverseRight(controller, delta);
+					} else if (isReverseTurningLeft) {
+						if (!checkFollowingWall(controller)) {
+							applyReverseLeft(controller, delta);
+						} else {
+							isReverseTurningLeft = false;
+						}
+					} else if (checkFollowingWall(controller)) {
+						if (controller.getVelocity() < 2.25) {
+							controller.applyReverseAcceleration();
+						}
+						if (checkWallBehind(controller)) {
+							controller.setLastTurnDirection(WorldSpatial.RelativeDirection.RIGHT);
+							isReverseTurningRight = true;	
+						}
+					} else {
+						controller.setLastTurnDirection(WorldSpatial.RelativeDirection.LEFT);
+						isReverseTurningLeft = true;
+					}
+				}
 			}
 		}
 	}
 	
+	/**
+	 * Re-adjust orientation perpendicularly
+	 * @param controller
+	 * @param delta
+	 */
 	private void readjust(MyAIController controller, float delta) {
 		if(controller.getLastTurnDirection() != null){
 			if (!isReverseTurningRight && controller.getLastTurnDirection().equals(WorldSpatial.RelativeDirection.RIGHT)){
@@ -77,6 +107,11 @@ public class ReverseOut implements DeadEndAction {
 		}
 	}
 	
+	/**
+	 * Apply left turn when reversing
+	 * @param controller
+	 * @param delta
+	 */
 	private void applyReverseLeft(MyAIController controller, float delta) {
 		WorldSpatial.Direction orientation = controller.getOrientation();
 		switch (orientation) {
@@ -105,6 +140,11 @@ public class ReverseOut implements DeadEndAction {
 		}
 	}
 	
+	/**
+	 * Apply right turn when reversing
+	 * @param controller
+	 * @param delta
+	 */
 	private void applyReverseRight(MyAIController controller, float delta) {
 		WorldSpatial.Direction orientation = controller.getOrientation();
 		switch (orientation) {
@@ -133,6 +173,11 @@ public class ReverseOut implements DeadEndAction {
 		}	
 	}
 	
+	/**
+	 * Check if there is a wall behind
+	 * @param controller
+	 * @return boolean
+	 */
 	private boolean checkWallBehind(MyAIController controller){
 		WorldSpatial.Direction orientation = controller.getOrientation();
 		HashMap<Coordinate, MapTile> currentView = controller.getView();
@@ -150,6 +195,11 @@ public class ReverseOut implements DeadEndAction {
 		}
 	}
 	
+	/**
+	 * Check whether the vehicle is following wall
+	 * @param controller
+	 * @return boolean
+	 */
 	private boolean checkFollowingWall(MyAIController controller) {
 		WorldSpatial.Direction orientation = controller.getOrientation();
 		HashMap<Coordinate, MapTile> currentView = controller.getView();
@@ -168,7 +218,7 @@ public class ReverseOut implements DeadEndAction {
 	}
 	
 	/**
-	 * Check
+	 * Check direction change
 	 * @param controller
 	 */
 	private void checkDirectionChange(MyAIController controller) {

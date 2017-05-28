@@ -3,10 +3,7 @@ package mycontroller;
 import java.util.HashMap;
 
 import controller.CarController;
-import tiles.GrassTrap;
-import tiles.LavaTrap;
 import tiles.MapTile;
-import tiles.MudTrap;
 import utilities.Coordinate;
 import world.Car;
 import world.WorldSpatial;
@@ -93,14 +90,12 @@ public class MyAIController extends CarController {
 		}
 		// Turn towards the north
 		if (!getOrientation().equals(WorldSpatial.Direction.NORTH)) {
-			System.out.println("1");
 			lastTurnDirection = WorldSpatial.RelativeDirection.LEFT;
 			applyLeftTurn(getOrientation(), delta);
 		}
 		if (checkNorth(currentView)){
 			// Turn right until we go back to east!
 			if (!getOrientation().equals(WorldSpatial.Direction.EAST)) {
-				System.out.println("2");
 				lastTurnDirection = WorldSpatial.RelativeDirection.RIGHT;
 				applyRightTurn(getOrientation(), delta);
 			} else {

@@ -36,15 +36,16 @@ public class DeadEndHandler {
 	 * Choose an action to handle dead-end
 	 * @param currentPosition
 	 * @param currentView
-	 * @return action
+	 * @return chosen action
 	 */
 	private DeadEndAction chooseAction(Coordinate currentPosition, HashMap<Coordinate, MapTile> currentView) {
+//		return new ThreePointTurn();
 		return new UTurn();
 	}
 	
 	/**
 	 * Check whether there is a dead-end
-	 * @return true if is
+	 * @return true if dead-end detected
 	 */
 	public boolean checkDeadEnd(MyAIController controller) {
 		HashMap<Coordinate, MapTile> currentView = controller.getView();

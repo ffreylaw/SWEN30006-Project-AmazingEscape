@@ -10,13 +10,10 @@ public class UTurn implements DeadEndAction {
 	private boolean isDone;
 	private boolean isDecelerated;
 	
+	/**
+	 * Construct an object of UTurn action
+	 */
 	public UTurn() {
-		targetOrientation = null;
-		isDone = false;
-		isDecelerated = false;
-	}
-	
-	public void reset() {
 		targetOrientation = null;
 		isDone = false;
 		isDecelerated = false;
@@ -26,20 +23,29 @@ public class UTurn implements DeadEndAction {
 	public void action(MyAIController controller, float delta) {
 		WorldSpatial.Direction currentOrientation = controller.getOrientation();
 		
-		if (!isDecelerated) {
-			controller.applyReverseAcceleration();
-		}
-		if (controller.getVelocity() <= 0.1) {
+		// stop the vehicle
+		if (controller.getVelocity() <= 0.1 && !isDecelerated) {
+			controller.applyBrake();
+		} else {
 			isDecelerated = true;
 		}
+		
+		// finalize the state
 		if (isDone) {
 			controller.changeState(State.NONE);
-		} else if (isDecelerated) {
+			isDone = false;
+			isDecelerated = false;
+			targetOrientation = null;
+		}
+		
+		// do u-turn
+		if (isDecelerated && !isDone) {
 			if (controller.getVelocity() < 0.2) {
 				controller.applyForwardAcceleration();
 			} else {
 				applyUTurn(controller, delta);
 				if (targetOrientation == null) {
+					// determine target orientation
 					switch (currentOrientation) {
 					case EAST:
 						targetOrientation = WorldSpatial.Direction.WEST;
@@ -57,14 +63,17 @@ public class UTurn implements DeadEndAction {
 				} else if (currentOrientation != targetOrientation) {
 					applyUTurn(controller, delta);
 				} else {
-					targetOrientation = null;
 					isDone = true;
 				}
 			}
 		}
 	}
 	
-	
+	/**
+	 * Apply U-turn
+	 * @param controller
+	 * @param delta
+	 */
 	private void applyUTurn(MyAIController controller, float delta) {
 		WorldSpatial.Direction orientation = controller.getOrientation();
 		switch(orientation){
