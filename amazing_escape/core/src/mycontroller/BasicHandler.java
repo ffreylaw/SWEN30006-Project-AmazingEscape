@@ -9,24 +9,35 @@ import world.WorldSpatial;
 
 public class BasicHandler {
 	
-	private boolean isTurningLeft = false;
-	private boolean isTurningRight = false; 
+	private boolean isTurningLeft;
+	private boolean isTurningRight; 
 	
-	private WorldSpatial.RelativeDirection lastTurnDirection = null;
-	private WorldSpatial.Direction previousDirection = null;
+	private WorldSpatial.RelativeDirection lastTurnDirection;
+	private WorldSpatial.Direction previousDirection;
 	
+	public static final float TURNING_SPEED = 2.9f;
+	
+	/**
+	 * Construct an object of basic handler
+	 */
 	public BasicHandler() {
-		
+		isTurningLeft = false;
+		isTurningRight = false;
+		lastTurnDirection = null;
+		previousDirection = null;
 	}
 	
+	/**
+	 * Handle NONE state, looking for wall and stick on it
+	 * @param controller
+	 * @param delta
+	 */
 	public void handleNone(MyAIController controller, float delta) {
 		HashMap<Coordinate, MapTile> currentView = controller.getView();
 		
 		if (checkFollowingWall(controller)) {
 			controller.changeState(State.FOLLOWING_WALL);
 		}
-		
-		checkDirectionChange(controller);
 		
 		if (controller.getVelocity() < MyAIController.CAR_SPEED) {
 			controller.applyForwardAcceleration();
@@ -47,20 +58,19 @@ public class BasicHandler {
 		}
 	}
 	
+	/**
+	 * Handle FOLLOWING_WALL state, to drive along west wall
+	 * @param controller
+	 * @param delta
+	 */
 	public void handleFollowingWall(MyAIController controller, float delta) {
-		checkDirectionChange(controller);
-		
-//		if (!isTurningRight && !isTurningLeft) {
-//			if (deadEndHandler.checkDeadEnd(this)) changeState(State.DEAD_END);
-//		}
-		
 		// Readjust the car if it is misaligned.
 		readjust(controller, delta);
 		
 		if (isTurningRight){
 			applyRightTurn(controller, delta);
 		} else if (isTurningLeft){
-			if (controller.getVelocity() < 2.9) {
+			if (controller.getVelocity() < TURNING_SPEED) {
 				controller.applyForwardAcceleration();
 			}
 			// Apply the left turn if you are not currently near a wall.
@@ -166,26 +176,6 @@ public class BasicHandler {
 	}
 	
 	/**
-	 * Checks whether the car's state has changed or not, stops turning if it
-	 *  already has.
-	 */
-	private void checkDirectionChange(MyAIController controller) {
-		if (previousDirection == null) {
-			previousDirection = controller.getOrientation();
-		} else {
-			if (previousDirection != controller.getOrientation()) {
-				if (isTurningLeft) {
-					isTurningLeft = false;
-				}
-				if (isTurningRight) {
-					isTurningRight = false;
-				}
-				previousDirection = controller.getOrientation();
-			}
-		}
-	}
-	
-	/**
 	 * Check if the wall is on your left hand side given your orientation
 	 * @param orientation
 	 * @param currentView
@@ -237,6 +227,22 @@ public class BasicHandler {
 
 	public boolean isTurningRight() {
 		return isTurningRight;
+	}
+	
+	public void setTurningLeft(boolean isTurningLeft) {
+		this.isTurningLeft = isTurningLeft;
+	}
+
+	public void setTurningRight(boolean isTurningRight) {
+		this.isTurningRight = isTurningRight;
+	}
+
+	public WorldSpatial.Direction getPreviousDirection() {
+		return previousDirection;
+	}
+
+	public void setPreviousDirection(WorldSpatial.Direction previousDirection) {
+		this.previousDirection = previousDirection;
 	}
 
 	public WorldSpatial.RelativeDirection getLastTurnDirection() {

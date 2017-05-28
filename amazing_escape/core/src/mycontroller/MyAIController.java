@@ -35,6 +35,8 @@ public class MyAIController extends CarController {
 
 	@Override
 	public void update(float delta) {
+		checkDirectionChange();
+		
 		if(!basicHandler.isTurningLeft() && 
 		   !basicHandler.isTurningRight() && 
 		   !trapHandler.isChangingLane()) {
@@ -181,6 +183,26 @@ public class MyAIController extends CarController {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Checks whether the car's state has changed or not, stops turning if it
+	 *  already has.
+	 */
+	private void checkDirectionChange() {
+		if (basicHandler.getPreviousDirection() == null) {
+			basicHandler.setPreviousDirection(getOrientation());
+		} else {
+			if (basicHandler.getPreviousDirection() != getOrientation()) {
+				if (basicHandler.isTurningLeft()) {
+					basicHandler.setTurningLeft(false);
+				}
+				if (basicHandler.isTurningRight()) {
+					basicHandler.setTurningRight(false);
+				}
+				basicHandler.setPreviousDirection(getOrientation());
+			}
+		}
 	}
 	
 	public WorldSpatial.RelativeDirection getLastTurnDirection() {
