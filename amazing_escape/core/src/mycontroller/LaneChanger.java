@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import tiles.MapTile;
 import utilities.Coordinate;
-import world.WorldSpatial;
 import world.WorldSpatial.Direction;
 import world.WorldSpatial.RelativeDirection;
 
@@ -25,19 +24,11 @@ public class LaneChanger {
 		}
 		
 		/**
-		 * Readjust the car to the orientation we are in.
-		 * @param controller
-		 * @param delta
+		 * Return a boolean value of whether the car is turning
+		 * @return
 		 */
-		public void readjust(MyAIController controller, float delta) {
-			if(controller.getLastTurnDirection() != null){
-				if((!turning))  // not turning
-					if(controller.getLastTurnDirection().equals(WorldSpatial.RelativeDirection.RIGHT)) {
-						controller.adjustRight(controller.getOrientation(), delta);
-					} else {
-						controller.adjustLeft(controller.getOrientation(), delta);
-					}
-				}
+		public boolean isTurning() {
+			return turning;
 		}
 		
 		/**
@@ -94,12 +85,10 @@ public class LaneChanger {
 		public void setChangeLane(MyAIController controller, float delta, int laneNum) {
 			System.out.println("set target lane num = " + laneNum);
 			System.out.println("orientation: " + controller.getOrientation());
-			readjust(controller, delta);
 			
 			// set last tile
 			turningTile = TileChecker.getTileAt(1, laneNum, controller, controller.getPosition());
 			
-			HashMap<Coordinate,MapTile> currentView = controller.getView();
 			Coordinate currentPosition = new Coordinate(controller.getPosition());
 			
 			System.out.println("turning tile at " + (currentPosition.x+1) + ", " + (currentPosition.y - laneNum));
@@ -113,9 +102,11 @@ public class LaneChanger {
 			if(laneNum < 0) {  // turn left
 				firstTurnDir = RelativeDirection.LEFT;
 				firstTurnTargetDir = getOri(carOri, true);
+				controller.setLastTurnDirection(RelativeDirection.LEFT);
 			} else {  // turn right
 				firstTurnDir = RelativeDirection.RIGHT;
 				firstTurnTargetDir = getOri(carOri, false);
+				controller.setLastTurnDirection(RelativeDirection.RIGHT);
 			}	
 		}
 		

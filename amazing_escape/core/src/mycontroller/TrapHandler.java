@@ -8,6 +8,7 @@ import tiles.MapTile;
 import tiles.MudTrap;
 import tiles.TrapTile;
 import utilities.Coordinate;
+import world.WorldSpatial;
 
 public class TrapHandler {
 
@@ -29,12 +30,12 @@ public class TrapHandler {
 	 */
 	public void handle(MyAIController controller, float delta) {
 		
+		readjust(controller, delta);
+		
 		if(changer.isChangingLane()) {
 			changer.doLaneChange(controller, delta);  // delegate handling to LaneChanger
 			return;
 		}
-		
-		changer.readjust(controller, delta);
 		
 		String pos = controller.getPosition();
 
@@ -214,5 +215,21 @@ public class TrapHandler {
 	 */
 	public boolean isChangingLane() {
 		return changer.isChangingLane();
+	}
+	
+	/**
+	 * Readjust the car to the orientation we are in.
+	 * @param controller
+	 * @param delta
+	 */
+	public void readjust(MyAIController controller, float delta) {
+		if(controller.getLastTurnDirection() != null){
+			if((!changer.isTurning()))  // not turning
+				if(controller.getLastTurnDirection().equals(WorldSpatial.RelativeDirection.RIGHT)) {
+					controller.adjustRight(controller.getOrientation(), delta);
+				} else {
+					controller.adjustLeft(controller.getOrientation(), delta);
+				}
+			}
 	}
 }
