@@ -24,19 +24,20 @@ public class UTurn implements DeadEndAction {
 		WorldSpatial.Direction currentOrientation = controller.getOrientation();
 		
 		// stop the vehicle
-		if (controller.getVelocity() <= 0.1 && !isDecelerated) {
+		if (!isDecelerated) {
 			controller.applyBrake();
-		} else {
+		}
+		
+		// check if is decelerated
+		if (controller.getVelocity() <= 0.1) {
 			isDecelerated = true;
 		}
 		
-		// finalize the state
+		// finalize the action
 		if (isDone) {
 			controller.changeState(State.NONE);
 			isDone = false;
-			isDecelerated = false;
-			targetOrientation = null;
-		}
+		} 
 		
 		// do u-turn
 		if (isDecelerated && !isDone) {
@@ -45,7 +46,6 @@ public class UTurn implements DeadEndAction {
 			} else {
 				applyUTurn(controller, delta);
 				if (targetOrientation == null) {
-					// determine target orientation
 					switch (currentOrientation) {
 					case EAST:
 						targetOrientation = WorldSpatial.Direction.WEST;
@@ -63,7 +63,9 @@ public class UTurn implements DeadEndAction {
 				} else if (currentOrientation != targetOrientation) {
 					applyUTurn(controller, delta);
 				} else {
+					targetOrientation = null;
 					isDone = true;
+					isDecelerated = false;
 				}
 			}
 		}
