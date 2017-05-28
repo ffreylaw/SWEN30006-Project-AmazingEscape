@@ -39,6 +39,8 @@ public class BasicHandler {
 			controller.changeState(State.FOLLOWING_WALL);
 		}
 		
+		checkDirectionChange(controller);
+		
 		if (controller.getVelocity() < MyAIController.CAR_SPEED) {
 			controller.applyForwardAcceleration();
 		}
@@ -59,11 +61,13 @@ public class BasicHandler {
 	}
 	
 	/**
-	 * Handle FOLLOWING_WALL state, to drive along west wall
+	 * Handle FOLLOWING_WALL state, drive along west wall
 	 * @param controller
 	 * @param delta
 	 */
 	public void handleFollowingWall(MyAIController controller, float delta) {
+		checkDirectionChange(controller);
+		
 		// Readjust the car if it is misaligned.
 		readjust(controller, delta);
 		
@@ -173,6 +177,26 @@ public class BasicHandler {
 		default:
 			break;
 		}	
+	}
+	
+	/**
+	 * Checks whether the car's state has changed or not, stops turning if it
+	 *  already has.
+	 */
+	private void checkDirectionChange(MyAIController controller) {
+		if (previousDirection == null) {
+			previousDirection = controller.getOrientation();
+		} else {
+			if (previousDirection != controller.getOrientation()) {
+				if (isTurningLeft) {
+					isTurningLeft = false;
+				}
+				if (isTurningRight) {
+					isTurningRight = false;
+				}
+				previousDirection = controller.getOrientation();
+			}
+		}
 	}
 	
 	/**
